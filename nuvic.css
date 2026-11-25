@@ -1,0 +1,1633 @@
+/* ==========================================================================
+   NUVIC — Hoja de estilos extraída de Figma (archivo "web-NUVIC")
+   Pantalla base: Inicio (node 131:404) · diseño móvil de 402 px de ancho
+   Tokens tomados de todo el archivo (colores, degradados, tipografía, radios)
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+
+/* --------------------------------------------------------------------------
+   1. Tokens (variables)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Marca */
+  --azul-noche: #002941;        /* títulos, pie de página, fondos oscuros */
+  --azul-noche-2: #0b4264;      /* inicio del degradado oscuro */
+  --azul-medio: #70afc4;
+  --azul-claro: #b6dfed;        /* texto sobre oscuro, final del hero */
+  --azul-hielo: #eaf6fb;
+  --azul-hielo-2: #c8e6f1;
+  --coral: #e04f54;             /* acento principal (precios, "en el campus") */
+  --coral-claro: #fd6e6e;       /* números, acento sobre oscuro */
+  --coral-boton: #f97f82;
+  --coral-boton-2: #e4505a;
+  --rosa-etiqueta: #ffc4bf;     /* etiqueta "Menor precio" */
+
+  /* Neutros */
+  --fondo: #f2fafd;
+  --blanco: #ffffff;
+  --texto: #4f6b7c;             /* texto secundario / cuerpo */
+  --texto-suave: #7a95a6;       /* placeholder */
+  --texto-mudo: #8fb0c4;        /* notas pequeñas en el pie */
+  --borde: #d3e8f1;
+
+  /* Degradados (todos verticales en Figma) */
+  --grad-hero: linear-gradient(180deg, var(--azul-medio) 0%, var(--azul-claro) 100%);
+  --grad-boton: linear-gradient(180deg, var(--coral-boton) 0%, var(--coral-boton-2) 100%);
+  --grad-foto: linear-gradient(180deg, var(--azul-hielo) 0%, var(--azul-hielo-2) 100%);
+  --grad-oscuro: linear-gradient(180deg, var(--azul-noche-2) 0%, var(--azul-noche) 100%);
+
+  /* Tipografía */
+  --fuente: "Poppins", system-ui, sans-serif;
+  --fs-display: 30px;   /* título del hero */
+  --fs-h2: 19px;        /* títulos de sección */
+  --fs-precio: 17px;
+  --fs-lg: 15px;
+  --fs-card: 14.5px;    /* nombre de comercio / paso */
+  --fs-base: 14px;
+  --fs-producto: 13.5px;
+  --fs-sm: 13px;
+  --fs-chip: 12.5px;
+  --fs-xs: 12px;
+  --fs-meta: 11.5px;
+  --fs-badge: 10px;
+
+  /* Radios */
+  --r-pill: 999px;
+  --r-xl: 22px;   /* banner del mapa */
+  --r-lg: 18px;   /* tarjetas de producto */
+  --r-md: 16px;   /* tarjetas de lista, pasos */
+  --r-sm: 14px;   /* buscador, foto de producto, botón del banner */
+  --r-xs: 10px;   /* botón "Buscar" */
+
+  /* Espaciado */
+  --margen: 20px;       /* margen lateral de la pantalla */
+  --gap: 8px;
+  --gap-md: 12px;
+  --gap-lg: 20px;
+
+  --borde-fino: 1.5px solid var(--borde);
+
+  /* Estados y colores de apoyo (resto de pantallas) */
+  --rosa-suave: #fff1ef;        /* fondo de avisos */
+  --rosa-error: #fde8e8;        /* fondo de error en formularios */
+  --rosa-nota: #ffe1de;         /* etiqueta "Sujeto a disponibilidad" */
+  --coral-deshabilitado: #f6b9b6;
+  --verde: #1e7a4c;
+  --verde-fondo: #e4f6ec;
+  --verde-cuenta: #1f7a45;
+  --verde-cuenta-fondo: #dcf1e4;
+  --verde-puntos: #6fbf47;      /* puntos sumados */
+  --rojo-puntos: #f75254;       /* puntos canjeados */
+  --gris-fondo: #e4eef3;        /* "No disponible", "Cerrado", "Agotado" */
+  --gris-tarjeta: #f7fbfd;      /* tarjeta deshabilitada */
+  --gris-titulo: #7f95a3;
+  --gris-precio: #a3b5c0;
+  --gris-meta: #98acb8;
+  --lila-fondo: #e4eefb;        /* "Solo miembros" */
+  --celeste-icono: #e4f3f9;     /* círculo de ilustraciones */
+  --linea: #e4f0f5;             /* divisores y pista de progreso */
+  --azul-escaner: #0b2a3f;
+  --grad-plus-icono: linear-gradient(180deg, var(--azul-noche) 0%, #0069a7 100%);
+
+  --fs-titulo-pagina: 26px;  /* "Mi lista", "Productos", "Perfil"… */
+  --fs-titulo-auth: 24px;    /* "Entra con tu cuenta UCA", "Mapa de comercios" */
+  --fs-titulo-detalle: 23px; /* "Farmacia Real", "Paracetamol 500 mg"… */
+  --fs-h3: 17px;             /* "Precios en este comercio", "Tus beneficios"… */
+  --fs-boton: 15px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+h1, h2, h3, p { margin: 0; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: 0; }
+
+.app {
+  max-width: 402px;
+  margin: 0 auto;
+  background: var(--fondo);
+  min-height: 100vh;
+}
+
+/* --------------------------------------------------------------------------
+   3. Encabezado
+   -------------------------------------------------------------------------- */
+.encabezado {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 64px;
+  padding: 0 var(--margen);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--blanco);
+  border-bottom: 1px solid var(--borde);
+}
+
+.logo { display: flex; align-items: center; gap: 6px; margin-right: auto; }
+.logo img { height: 27px; width: auto; }
+
+.btn-entrar {
+  height: 32px;
+  padding: 0 20px;
+  border-radius: var(--r-pill);
+  border: 1.8px solid var(--coral);
+  background: var(--blanco);
+  color: var(--coral);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+
+.btn-menu {
+  width: 24px;
+  height: 18px;
+  padding: 0;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.btn-menu span { height: 2.6px; border-radius: 2px; background: var(--azul-noche); }
+
+/* --------------------------------------------------------------------------
+   4. Hero + buscador + categorías
+   -------------------------------------------------------------------------- */
+.hero {
+  background: var(--grad-hero);
+  padding: 24px var(--margen) 20px;
+}
+
+.hero__titulo {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--azul-noche);
+}
+.hero__titulo em { font-style: normal; color: var(--coral); display: block; }
+
+.hero__texto {
+  margin-top: 6px;
+  font-size: var(--fs-base);
+  line-height: 1.45;
+  color: var(--texto);
+  max-width: 300px;
+}
+
+.buscador {
+  margin-top: 16px;
+  height: 54px;
+  padding: 0 8px 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-sm);
+}
+.buscador svg { width: 16px; height: 16px; flex: none; color: var(--azul-noche); }
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: var(--fs-lg);
+  color: var(--azul-noche);
+  background: transparent;
+}
+.buscador input::placeholder { color: var(--texto-suave); }
+
+.btn-primario {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: var(--r-xs);
+  background: var(--grad-boton);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: var(--fs-base);
+}
+
+.chips {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.chip {
+  height: 36px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r-pill);
+  background: var(--blanco);
+  border: var(--borde-fino);
+  color: var(--texto);
+  font-weight: 700;
+  font-size: var(--fs-chip);
+}
+.chip.is-activo { background: var(--azul-noche); border-color: var(--azul-noche); color: var(--blanco); }
+.chips--fila { margin-top: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+
+/* --------------------------------------------------------------------------
+   5. Secciones
+   -------------------------------------------------------------------------- */
+.seccion { padding: 24px var(--margen) 0; }
+
+.seccion__cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.seccion__titulo {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.seccion__enlace {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--coral);
+}
+
+/* --------------------------------------------------------------------------
+   6. Tarjeta de producto (cuadrícula 2 columnas)
+   -------------------------------------------------------------------------- */
+.productos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 20px;
+}
+
+.producto {
+  position: relative;
+  padding: 8px 8px 12px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-lg);
+}
+
+.producto__foto {
+  height: 112px;
+  border-radius: var(--r-sm);
+  background: var(--grad-foto);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.producto__foto img,
+.foto-producto__imagen img { width: 100%; height: 100%; object-fit: cover; }
+
+.etiqueta {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  height: 24px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r-pill);
+  background: var(--rosa-etiqueta);
+  color: var(--azul-noche);
+  font-weight: 700;
+  font-size: var(--fs-badge);
+}
+
+.producto__nombre {
+  margin: 12px 4px 0;
+  font-size: var(--fs-producto);
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.producto__meta {
+  margin: 0 6px;
+  font-size: var(--fs-meta);
+  color: var(--texto);
+}
+.producto__pie {
+  margin: 6px 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.precio {
+  font-size: var(--fs-precio);
+  font-weight: 700;
+  color: var(--coral);
+}
+.flecha {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--texto);
+}
+
+/* --------------------------------------------------------------------------
+   7. "Cómo funciona" — pasos
+   -------------------------------------------------------------------------- */
+.pasos { display: grid; gap: 10px; }
+
+.paso {
+  min-height: 74px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-md);
+}
+.paso__numero {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--coral-claro);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: 16px;
+}
+.paso__titulo {
+  font-size: var(--fs-card);
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.paso__texto {
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+  color: var(--texto);
+}
+
+/* --------------------------------------------------------------------------
+   8. Lista de comercios
+   -------------------------------------------------------------------------- */
+.comercios { display: grid; gap: 10px; }
+
+.comercio {
+  min-height: 78px;
+  padding: 8px 18px 8px 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-md);
+}
+.comercio__foto {
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--grad-foto);
+}
+.comercio__info { flex: 1; min-width: 0; }
+.comercio__nombre {
+  font-size: var(--fs-card);
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.comercio__meta {
+  font-size: var(--fs-xs);
+  color: var(--texto);
+}
+.comercio .flecha { font-size: 22px; }
+
+/* --------------------------------------------------------------------------
+   9. Banner del mapa
+   -------------------------------------------------------------------------- */
+.banner-mapa {
+  margin: 26px var(--margen) 0;
+  padding: 20px;
+  border-radius: var(--r-xl);
+  background: var(--grad-oscuro);
+  border: 2px solid rgb(255 254 254 / 0.5);
+}
+.banner-mapa__titulo {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--blanco);
+}
+.banner-mapa__titulo em { font-style: normal; color: var(--coral-claro); display: block; }
+.banner-mapa__texto {
+  margin-top: 4px;
+  font-size: var(--fs-xs);
+  color: var(--azul-claro);
+}
+.banner-mapa .btn-primario {
+  margin-top: 12px;
+  height: 38px;
+  padding: 0 26px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+}
+
+/* --------------------------------------------------------------------------
+   10. Pie de página
+   -------------------------------------------------------------------------- */
+.pie {
+  margin-top: 40px;
+  padding: 26px var(--margen) 18px;
+  background: var(--azul-noche);
+  color: var(--azul-claro);
+}
+.pie__lema { margin-top: 6px; font-size: var(--fs-sm); }
+
+.pie__nav {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 0;
+  padding: 0 0 14px;
+  border-bottom: 1px solid #1b4560;
+  list-style: none;
+}
+.pie__nav a { font-weight: 700; font-size: var(--fs-base); color: var(--blanco); }
+
+.pie__nota {
+  margin-top: 8px;
+  font-size: var(--fs-meta);
+  color: var(--texto-mudo);
+}
+
+/* ==========================================================================
+   RESTO DE PANTALLAS
+   Componentes compartidos por las ~45 pantallas del archivo.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   11. Estructura de página y títulos
+   -------------------------------------------------------------------------- */
+.pagina { padding: 18px var(--margen) 0; }
+.pagina > * + * { margin-top: 12px; }
+
+.migas { font-size: var(--fs-xs); color: var(--texto); }   /* Inicio › Mapa › … */
+.migas a:hover { color: var(--coral); }
+
+.pagina__titulo {
+  font-size: var(--fs-titulo-pagina);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--azul-noche);
+}
+.pagina__titulo--auth { font-size: var(--fs-titulo-auth); }
+.pagina__titulo--detalle { font-size: var(--fs-titulo-detalle); }
+.pagina__titulo em { font-style: normal; color: var(--coral-claro); display: block; }
+.pagina__subtitulo { font-size: 13.5px; color: var(--texto); }
+.pagina__subtitulo--sm { font-size: var(--fs-chip); }
+
+.subtitulo {                     /* "Precios en este comercio", "Tus beneficios" */
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.subtitulo-fila { display: flex; align-items: baseline; justify-content: space-between; }
+.subtitulo-fila small { font-size: var(--fs-xs); color: var(--texto); }
+
+.categoria {                     /* "Salud sexual", "Ramitos", "Alergias y gripe" */
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--coral);
+}
+
+.lista { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+
+.nota {                          /* textos legales / aclaraciones al pie */
+  font-size: var(--fs-meta);
+  color: var(--texto);
+  text-align: center;
+}
+
+.enlace {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  color: var(--coral);
+}
+.enlace--volver { font-size: var(--fs-producto); }   /* "‹ Volver a iniciar sesión" */
+
+/* Botón de puntos del encabezado (usuario con sesión) */
+.btn-puntos {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: var(--r-md);
+  background: var(--grad-boton);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: var(--fs-chip);
+}
+
+/* --------------------------------------------------------------------------
+   12. Botones de acción (ancho completo)
+   -------------------------------------------------------------------------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
+  padding: 0 20px;
+  border-radius: var(--r-sm);
+  font-weight: 700;
+  font-size: var(--fs-boton);
+  text-align: center;
+}
+.btn--primario { background: var(--grad-boton); color: var(--blanco); }
+.btn--solido { background: var(--coral-claro); color: var(--blanco); }   /* login / crear cuenta */
+.btn--secundario {
+  background: var(--blanco);
+  color: var(--coral);
+  border: 2px solid var(--coral);
+}
+.btn--oscuro { background: var(--azul-noche); color: var(--blanco); }
+.btn--grande { height: 54px; font-size: 16px; }
+.btn--medio { height: 48px; font-size: var(--fs-base); }
+.btn:disabled,
+.btn.is-deshabilitado { background: var(--coral-deshabilitado); color: var(--blanco); cursor: not-allowed; }
+
+.botones { display: grid; gap: 12px; }
+.botones--par { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* --------------------------------------------------------------------------
+   13. Formularios (login, crear cuenta, contraseña, pago)
+   -------------------------------------------------------------------------- */
+.formulario { display: grid; gap: 8px; }
+
+.campo { display: grid; gap: 6px; }
+.campo label {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  color: var(--texto);
+}
+.campo input {
+  height: 50px;
+  width: 100%;
+  padding: 0 16px;
+  border: var(--borde-fino);
+  border-radius: var(--r-sm);
+  background: var(--blanco);
+  font: inherit;
+  font-size: var(--fs-lg);
+  color: var(--azul-noche);
+  outline: none;
+}
+.campo input::placeholder { color: var(--texto-suave); }
+.campo input:focus { border-color: var(--azul-medio); }
+.campo.is-error input { border: 2px solid var(--coral); }
+
+.campos-par { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+.alerta-error {
+  min-height: 40px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--rosa-error);
+  color: var(--coral);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+
+.casilla {                       /* "Acepto los términos…" */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-chip);
+  color: var(--azul-noche);
+}
+.casilla input {
+  appearance: none;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border-radius: 7px;
+  border: 2px solid var(--borde);
+  background: var(--blanco);
+  display: grid;
+  place-items: center;
+}
+.casilla input:checked { background: var(--coral-claro); border-color: var(--coral-claro); }
+.casilla input:checked::after { content: "✓"; color: var(--blanco); font-size: 14px; font-weight: 700; }
+
+.requisitos { display: grid; gap: 12px; padding: 0 10px; margin: 0; list-style: none; }
+.requisitos li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-chip);
+  color: var(--texto);
+}
+.requisitos li::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--borde);
+  flex: none;
+}
+.requisitos li.is-ok { color: var(--azul-noche); }
+.requisitos li.is-ok::before { background: var(--coral-claro); border-color: var(--coral-claro); }
+
+.separador {                     /* "o continúa con" */
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--texto);
+}
+
+.pregunta {                      /* "¿No tienes cuenta?  Crear cuenta" */
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--texto);
+}
+.pregunta a { display: block; font-size: var(--fs-card); font-weight: 700; color: var(--coral); }
+
+/* --------------------------------------------------------------------------
+   14. Tarjetas base
+   -------------------------------------------------------------------------- */
+.tarjeta {
+  padding: 16px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-lg);
+}
+.tarjeta--md { border-radius: var(--r-md); }
+.tarjeta--xl { border-radius: 20px; }
+
+.tarjeta-oscura {
+  padding: 20px;
+  border-radius: var(--r-xl);
+  background: var(--grad-oscuro);
+  border: 2px solid rgb(255 255 255 / 0.5);
+  color: var(--azul-claro);
+}
+.tarjeta-oscura--plan { border-radius: 24px; }
+
+/* Filas etiqueta / valor (detalle de oferta, transacción, recompensa) */
+.filas { display: grid; gap: 14px; }
+.fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--fs-chip);
+  color: var(--texto);
+}
+.fila strong { font-size: var(--fs-producto); color: var(--azul-noche); text-align: right; }
+.fila strong.is-negativo { font-size: var(--fs-boton); color: var(--coral); }
+
+/* --------------------------------------------------------------------------
+   15. Detalle de comercio
+   -------------------------------------------------------------------------- */
+.portada {
+  width: 100%;
+  height: 190px;
+  border-radius: 20px;
+  object-fit: cover;
+  background: var(--grad-foto);
+}
+.portada--sm { height: 150px; border-radius: var(--r-xl); }
+
+.info-comercio { display: grid; gap: 18px; }        /* dirección + horario */
+.info-comercio li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-producto);
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.info-comercio svg { width: 18px; height: 18px; color: var(--coral); flex: none; }
+
+/* Fila de producto con precio */
+.item-precio {
+  min-height: 74px;
+  padding: 8px 18px 8px 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-md);
+}
+.item-precio--alto { min-height: 88px; }
+.item-precio__foto {
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: var(--grad-foto);
+  object-fit: cover;
+}
+.item-precio__foto--lg { width: 72px; height: 72px; }
+.item-precio__info { flex: 1; min-width: 0; }
+.item-precio__nombre { font-size: var(--fs-base); font-weight: 700; color: var(--azul-noche); }
+.item-precio__meta { font-size: var(--fs-meta); color: var(--texto); }
+.item-precio__precio {
+  flex: none;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--coral);
+}
+
+/* Variante deshabilitada / agotada */
+.is-agotado { background: var(--gris-tarjeta); }
+.is-agotado .item-precio__nombre,
+.is-agotado .opcion__nombre { color: var(--gris-titulo); }
+.is-agotado .item-precio__precio,
+.is-agotado .opcion__precio { color: var(--gris-precio); }
+.is-agotado .item-precio__meta,
+.is-agotado .opcion__meta { color: var(--gris-meta); }
+.is-agotado .item-precio__foto { background: var(--gris-fondo); opacity: 0.55; }
+
+/* --------------------------------------------------------------------------
+   16. Etiquetas de estado (píldoras pequeñas)
+   -------------------------------------------------------------------------- */
+.estado {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 11px;
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  font-size: var(--fs-badge);
+  white-space: nowrap;
+}
+.estado--disponible { background: var(--verde-fondo); color: var(--verde); }
+.estado--no-disponible,
+.estado--cerrado,
+.estado--agotado { background: var(--gris-fondo); color: var(--texto); }
+.estado--mejor { background: var(--coral-claro); color: var(--blanco); }
+.estado--menor { background: var(--rosa-etiqueta); color: var(--azul-noche); }
+.estado--nueva { background: var(--rosa-etiqueta); color: var(--coral); }
+.estado--miembros { background: var(--lila-fondo); color: var(--azul-noche); }
+.estado--miembros-oscuro { background: var(--azul-noche); color: var(--blanco); }
+.estado--verificada { background: var(--verde-cuenta-fondo); color: var(--verde-cuenta); }
+.estado--plus { justify-self: start; height: 26px; padding: 0 15px; background: var(--grad-boton); color: var(--blanco); font-size: var(--fs-meta); }
+.estado--puntos { height: 24px; padding: 0 16px; background: var(--coral-claro); color: var(--blanco); font-size: 11px; }
+.estado--nota {                  /* "Sujeto a disponibilidad" */
+  height: 20px;
+  padding: 0 14px;
+  background: var(--rosa-nota);
+  color: var(--coral);
+  font-size: 9.5px;
+}
+.estado--grande { height: 24px; font-size: 10.5px; }
+
+/* --------------------------------------------------------------------------
+   17. Comparar precios entre comercios
+   -------------------------------------------------------------------------- */
+.foto-producto {                 /* cabecera de "Comparar precios" / "Detalle de oferta" */
+  position: relative;
+  padding: 10px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: 20px;
+}
+.foto-producto__imagen {
+  height: 180px;
+  border-radius: var(--r-md);
+  background: var(--grad-foto);
+  display: grid;
+  place-items: center;
+}
+.foto-producto .estado { position: absolute; top: 22px; left: 20px; }
+
+.opcion {
+  min-height: 88px;
+  padding: 10px 16px 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-lg);
+}
+.opcion.is-mejor { border: 2.5px solid var(--coral); }
+.opcion--resaltada { border: 2px solid var(--coral-claro); }
+.opcion__foto {
+  flex: none;
+  width: 70px;
+  height: 70px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--grad-foto);
+}
+.opcion__info { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.opcion__nombre { font-size: var(--fs-boton); font-weight: 700; color: var(--azul-noche); }
+.opcion__meta { font-size: var(--fs-xs); color: var(--texto); }
+.opcion__enlace { font-size: var(--fs-xs); font-weight: 700; color: var(--coral); }
+.opcion__lado { display: grid; justify-items: end; gap: 8px; }
+.opcion__precio { font-size: 24px; font-weight: 700; color: var(--azul-noche); }
+.opcion.is-mejor .opcion__precio { color: var(--coral); }
+
+/* --------------------------------------------------------------------------
+   18. Avisos (producto agotado, no disponible…)
+   -------------------------------------------------------------------------- */
+.aviso {
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  background: var(--rosa-suave);
+  border: 1.5px solid var(--rosa-etiqueta);
+  border-radius: var(--r-md);
+}
+.aviso__icono {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--coral-claro);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: var(--fs-base);
+}
+.aviso__titulo { font-size: var(--fs-producto); font-weight: 700; color: var(--coral); }
+.aviso__texto { font-size: var(--fs-meta); color: var(--texto); }
+
+/* --------------------------------------------------------------------------
+   19. Mapa de comercios
+   -------------------------------------------------------------------------- */
+.mapa {
+  position: relative;
+  height: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+.mapa__lienzo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.pin {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  transform: translate(-50%, -100%);
+}
+.pin__precio {
+  min-width: 52px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background: var(--blanco);
+  color: var(--azul-noche);
+  font-weight: 700;
+  font-size: var(--fs-meta);
+  box-shadow: 0 2px 6px rgb(0 41 65 / 0.12);
+}
+.pin__foto {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--azul-claro);
+  background: var(--blanco);
+  object-fit: cover;
+}
+.pin.is-activo .pin__precio { background: var(--coral-claro); color: var(--blanco); }
+.pin.is-activo .pin__foto { width: 60px; height: 60px; border-color: var(--coral-claro); }
+
+.mapa__zoom {
+  position: absolute;
+  right: 8px;
+  top: 234px;
+  width: 30px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--blanco);
+  border: 1px solid #dadce0;
+}
+.mapa__zoom button {
+  display: block;
+  width: 100%;
+  height: 29px;
+  background: none;
+  color: #5f6368;
+  font-size: 20px;
+  line-height: 1;
+}
+.mapa__ubicacion {
+  position: absolute;
+  right: 7px;
+  top: 302px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--blanco);
+  border: 1px solid #dadce0;
+}
+.mapa__marca {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 3px 14px;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.93);
+  color: #5f6368;
+  font-weight: 700;
+  font-size: var(--fs-badge);
+}
+
+/* Comercio seleccionado debajo del mapa */
+.comercio-destacado {
+  min-height: 150px;
+  padding: 10px 16px 10px 10px;
+  display: flex;
+  gap: 14px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: 20px;
+}
+.comercio-destacado__foto {
+  flex: none;
+  width: 110px;
+  height: 130px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--grad-foto);
+}
+.comercio-destacado__info { flex: 1; display: grid; align-content: start; gap: 4px; padding-top: 4px; }
+.comercio-destacado__nombre { font-size: 16px; font-weight: 700; color: var(--azul-noche); }
+.comercio-destacado__precio { align-self: end; text-align: right; font-size: 24px; font-weight: 700; color: var(--coral); }
+.comercio-destacado__precio small { display: block; font-size: 11px; font-weight: 400; color: var(--texto); }
+
+/* --------------------------------------------------------------------------
+   20. Mi lista
+   -------------------------------------------------------------------------- */
+.item-lista { min-height: 82px; }                 /* usa .item-precio */
+.item-lista .item-precio__nombre { font-size: var(--fs-card); }
+.item-lista .item-precio__meta { font-size: var(--fs-xs); }
+.item-lista .item-precio__precio { font-size: 19px; }
+
+.total {                          /* tarjeta oscura con el total */
+  display: grid;
+  gap: 4px;
+  border-radius: 20px;
+}
+.total__etiqueta { font-size: var(--fs-xs); color: var(--azul-claro); }
+.total__fila { display: flex; align-items: center; justify-content: space-between; }
+.total__monto { font-size: 38px; font-weight: 700; line-height: 1.2; color: var(--blanco); }
+.total__monto--sm { font-size: 22px; }
+.total__ahorro {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: var(--blanco);
+  color: var(--coral);
+  font-weight: 700;
+  font-size: var(--fs-meta);
+}
+.total__nota { font-size: var(--fs-xs); color: var(--azul-claro); }
+.total__nota strong { font-size: var(--fs-sm); }
+
+/* --------------------------------------------------------------------------
+   21. Perfil
+   -------------------------------------------------------------------------- */
+.perfil {
+  min-height: 100px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: 20px;
+}
+.avatar {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--grad-boton);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: 20px;
+}
+.perfil__nombre { font-size: var(--fs-h3); font-weight: 700; color: var(--azul-noche); }
+.perfil__meta { font-size: var(--fs-xs); color: var(--texto); }
+.perfil .estado { margin-top: 6px; height: 24px; }
+
+.cifras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cifra {
+  min-height: 84px;
+  padding: 14px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-lg);
+}
+.cifra strong { font-size: var(--fs-titulo-pagina); line-height: 1.2; color: var(--coral-claro); }
+.cifra--sm strong { font-size: 24px; }
+.cifra span { font-size: var(--fs-xs); color: var(--texto); }
+
+.menu-item {                      /* "Mi lista ›", "Historial de puntos ›" */
+  min-height: 62px;
+  padding: 10px 18px 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-md);
+}
+.menu-item strong { display: block; font-size: var(--fs-card); color: var(--azul-noche); }
+.menu-item small { font-size: var(--fs-meta); color: var(--texto); }
+.menu-item .flecha { font-size: 22px; }
+
+/* --------------------------------------------------------------------------
+   22. Estados vacíos, confirmaciones e ilustraciones
+   -------------------------------------------------------------------------- */
+.estado-vacio {
+  padding-top: 34px;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.estado-vacio__titulo { font-size: var(--fs-titulo-detalle); font-weight: 700; color: var(--azul-noche); }
+.estado-vacio__titulo--sm { font-size: 20px; }
+.estado-vacio__texto { font-size: var(--fs-sm); color: var(--texto); max-width: 300px; }
+.estado-vacio__resultado { font-size: 56px; font-weight: 700; line-height: 1.1; color: var(--coral-claro); }
+
+.icono-circulo {                  /* círculo celeste + círculo blanco interno */
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--celeste-icono);
+}
+.icono-circulo::before { content: none; }
+.icono-circulo__interno {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--blanco);
+  border: 3px solid var(--azul-claro);
+  color: var(--azul-noche);
+}
+.icono-circulo--lg { width: 124px; height: 124px; }
+.icono-circulo--lg .icono-circulo__interno { width: 88px; height: 88px; }
+
+.icono-exito {                    /* círculo coral con check blanco */
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--grad-boton);
+  color: var(--blanco);
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.ilustracion-panel {              /* panel celeste de "No hay comercios abiertos" */
+  height: 200px;
+  border-radius: var(--r-xl);
+  display: grid;
+  place-items: center;
+  background: #ddeff6;
+}
+
+/* --------------------------------------------------------------------------
+   23. Puntos y recompensas
+   -------------------------------------------------------------------------- */
+.saldo { min-height: 176px; display: grid; gap: 4px; }   /* usa .tarjeta-oscura */
+.saldo__etiqueta { font-size: var(--fs-sm); }
+.saldo__cifra { display: flex; align-items: baseline; gap: 18px; }
+.saldo__cifra strong { font-size: 50px; line-height: 1.1; color: var(--blanco); }
+.saldo__cifra span { font-size: 16px; }
+.saldo__nota { font-size: var(--fs-xs); }
+
+.progreso {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--linea);
+  overflow: hidden;
+}
+.progreso--oscuro { background: var(--azul-claro); }
+.progreso__barra { height: 100%; border-radius: 5px; background: var(--coral-claro); }
+.progreso-cabecera {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.progreso-cabecera span { font-size: var(--fs-sm); color: var(--texto); }
+
+.movimiento {
+  min-height: 66px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-md);
+}
+.movimiento strong { display: block; font-size: var(--fs-base); color: var(--azul-noche); }
+.movimiento small { font-size: var(--fs-meta); color: var(--texto); }
+.movimiento__puntos { font-size: var(--fs-boton); font-weight: 700; color: var(--verde-puntos); }
+.movimiento__puntos.is-canje { color: var(--rojo-puntos); }
+
+.recompensa {                     /* tarjeta de recompensa con foto grande */
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: 20px;
+}
+.recompensa__foto {
+  flex: none;
+  width: 94px;
+  height: 94px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  background: #ddf3ee;
+}
+.recompensa__nombre { font-size: var(--fs-producto); font-weight: 700; color: var(--azul-noche); }
+.recompensa__comercio { font-size: var(--fs-chip); color: var(--texto); }
+.recompensa__puntos { margin-top: 6px; font-size: var(--fs-h3); font-weight: 700; color: var(--coral-claro); }
+
+/* --------------------------------------------------------------------------
+   24. Escanear QR y código de oferta
+   -------------------------------------------------------------------------- */
+.escaner {
+  position: relative;
+  height: 300px;
+  border-radius: var(--r-xl);
+  background: var(--azul-escaner);
+  overflow: hidden;
+}
+.escaner__marco { position: absolute; inset: 40px 40px 40px; }
+.escaner__marco::before,
+.escaner__marco::after,
+.escaner__marco span::before,
+.escaner__marco span::after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 6px solid var(--coral-claro);
+}
+.escaner__marco::before { top: 0; left: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 14px; }
+.escaner__marco::after { top: 0; right: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 14px; }
+.escaner__marco span::before { bottom: 0; left: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 14px; }
+.escaner__marco span::after { bottom: 0; right: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 14px; }
+.escaner__texto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--azul-claro);
+}
+
+.codigo-qr {
+  width: 282px;
+  height: 282px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: 24px;
+}
+.codigo-qr__texto { text-align: center; font-size: var(--fs-boton); font-weight: 700; color: var(--azul-noche); }
+
+/* --------------------------------------------------------------------------
+   25. Membresía (Nuvic Plus)
+   -------------------------------------------------------------------------- */
+.plan { min-height: 164px; display: grid; gap: 2px; }   /* usa .tarjeta-oscura--plan */
+.plan__cabecera { display: flex; align-items: center; justify-content: space-between; }
+.plan__nombre { font-size: var(--fs-base); font-weight: 700; color: var(--azul-claro); }
+.plan__precio { display: flex; align-items: baseline; gap: 16px; }
+.plan__precio strong { font-size: 52px; line-height: 1.15; color: var(--blanco); }
+.plan__precio span { font-size: var(--fs-h3); }
+.plan__nota { font-size: var(--fs-xs); }
+.plan .estado { height: 24px; padding: 0 16px; background: var(--grad-boton); color: var(--blanco); font-size: 10.5px; }
+
+.beneficio {
+  min-height: 72px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-md);
+}
+.beneficio::before {
+  content: "✓";
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--coral-claro);
+  color: var(--blanco);
+  font-size: 12px;
+  font-weight: 700;
+}
+.beneficio strong { display: block; font-size: var(--fs-base); color: var(--azul-noche); }
+.beneficio small { font-size: var(--fs-meta); color: var(--texto); }
+.beneficio--compacto { min-height: 52px; border-radius: var(--r-sm); }
+.beneficio--compacto strong { font-size: var(--fs-producto); }
+.beneficio--plano { min-height: 0; padding: 0; border: 0; background: none; }   /* lista dentro de tarjeta */
+
+.tabla-planes {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: 20px;
+  overflow: hidden;
+  font-size: var(--fs-sm);
+}
+.tabla-planes th,
+.tabla-planes td { height: 36px; padding: 0 16px; text-align: center; }
+.tabla-planes th { height: 44px; font-size: var(--fs-xs); font-weight: 700; color: var(--texto); }
+.tabla-planes th:last-child { color: var(--coral); }
+.tabla-planes td { font-weight: 700; color: var(--texto); border-top: 1px solid var(--linea); }
+.tabla-planes td:last-child { color: var(--coral); }
+.tabla-planes td:first-child { text-align: left; font-weight: 400; color: var(--azul-noche); }
+
+.resumen-pago { display: grid; gap: 14px; border-radius: 20px; }   /* usa .tarjeta */
+.resumen-pago__producto { display: flex; align-items: center; gap: 16px; }
+.resumen-pago__icono {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-md);
+  display: grid;
+  place-items: center;
+  background: var(--grad-plus-icono);
+  border: 2px solid rgb(255 251 251 / 0.5);
+  color: var(--coral-boton);
+  font-size: 30px;
+}
+.resumen-pago__precio { margin-left: auto; font-size: 22px; font-weight: 700; color: var(--coral-claro); }
+
+.metodo-pago {
+  height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--blanco);
+  border: 2px solid var(--coral);
+  border-radius: var(--r-sm);
+  font-weight: 700;
+  font-size: var(--fs-base);
+  color: var(--azul-noche);
+}
+
+/* --------------------------------------------------------------------------
+   26. Ofertas
+   -------------------------------------------------------------------------- */
+.banner-plus { display: grid; gap: 4px; }          /* usa .tarjeta-oscura */
+.banner-plus__titulo { font-size: 16px; font-weight: 700; color: var(--blanco); }
+.banner-plus__texto { font-size: var(--fs-xs); }
+.banner-plus .btn { width: 150px; height: 34px; margin-top: 8px; font-size: var(--fs-sm); }
+.banner-plus--miembro { min-height: 64px; padding: 12px 16px; border-radius: var(--r-lg); }
+.banner-plus--miembro .banner-plus__titulo { font-size: var(--fs-base); }
+
+.oferta {
+  position: relative;
+  min-height: 104px;
+  padding: 14px 18px 14px 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--blanco);
+  border: var(--borde-fino);
+  border-radius: var(--r-lg);
+}
+.oferta__foto {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  object-fit: cover;
+  background: var(--grad-foto);
+}
+.oferta__info { flex: 1; min-width: 0; display: grid; gap: 2px; justify-items: start; }
+.oferta__titulo { font-size: var(--fs-card); font-weight: 700; color: var(--azul-noche); }
+.oferta__meta { font-size: var(--fs-meta); color: var(--texto); }
+.oferta .estado { margin-top: 6px; }
+.oferta .flecha { font-size: 22px; }
+.oferta.is-bloqueada::after {      /* velo de las ofertas solo para miembros */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(242 250 253 / 0.72);
+}
+
+/* Pasos numerados pequeños ("Cómo usarla") */
+.pasos-mini { display: grid; gap: 14px; padding: 0 5px; margin: 0; list-style: none; counter-reset: paso; }
+.pasos-mini li {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: var(--fs-chip);
+  color: var(--azul-noche);
+  counter-increment: paso;
+}
+.pasos-mini li::before {
+  content: counter(paso);
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--coral-claro);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+
+/* --------------------------------------------------------------------------
+   27. Buscador redondo (pantalla "Sin resultado")
+   -------------------------------------------------------------------------- */
+.buscador--pill {
+  margin-top: 0;
+  height: 52px;
+  border-radius: 26px;
+  padding: 0 18px;
+}
+.buscador--pill input { font-size: var(--fs-card); }
+.buscador--simple { height: 50px; padding-right: 18px; }   /* sin botón "Buscar" */
+
+/* --------------------------------------------------------------------------
+   28. Ajustes para las páginas completas
+   -------------------------------------------------------------------------- */
+.encabezado .logo img { height: 27px; }
+.pie .logo-pie { height: 27px; width: auto; }
+
+.mapa__fondo { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mapa .pin__foto { display: block; }
+
+/* Menú abierto */
+.menu-panel {
+  padding: 8px var(--margen) 24px;
+  display: grid;
+  gap: 4px;
+  background: var(--blanco);
+}
+.menu-panel a.menu-panel__item {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--azul-noche);
+}
+.menu-icono {                     /* íconos del menú: gris; el de la página actual en coral */
+  flex: none;
+  width: 24px;
+  height: 20px;
+  color: var(--texto);
+}
+.menu-panel__item.is-actual .menu-icono { color: var(--coral); }
+.menu-panel .btn .menu-icono { width: 18px; height: 18px; color: currentColor; }
+.menu-panel .btn { margin-top: 12px; height: 48px; font-size: var(--fs-base); }
+.menu-panel .nota { text-align: left; }
+.velo { min-height: calc(100vh - 470px); background: rgb(0 41 65 / 0.5); }
+
+/* Precio en rosa de los detalles largos (Farmacia Real, Lanny's…) */
+.item-precio__precio--rosa { font-size: 19px; color: var(--coral-claro); }
+.item-precio--detalle { min-height: 97px; }
+.item-precio--detalle .item-precio__foto { width: 70px; height: 78px; border-radius: 12px; }
+.item-precio--detalle .item-precio__nombre { font-size: var(--fs-producto); }
+.item-precio--detalle .item-precio__meta { font-size: 13.5px; }
+.item-precio .estado--nota { margin-top: 6px; }
+.item-precio__lado { display: grid; justify-items: end; gap: 6px; }
+.icono-tile {                   /* recuadro de color con ícono (ofertas, recompensas) */
+  display: grid;
+  place-items: center;
+  background: var(--azul-hielo);
+}
+.icono-tile::after {
+  content: "";
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  grid-area: 1 / 1;
+}
+.icono-tile img { grid-area: 1 / 1; z-index: 1; }
+
+/* Opción alternativa ("Disponible en otro comercio") */
+.alternativa { display: grid; gap: 2px; }
+.alternativa__etiqueta { font-size: var(--fs-xs); font-weight: 700; color: var(--texto); }
+.alternativa__fila { display: flex; justify-content: space-between; align-items: center; }
+.alternativa__nombre { font-size: var(--fs-boton); font-weight: 700; color: var(--azul-noche); }
+.alternativa__precio { font-size: 22px; font-weight: 700; color: var(--coral); }
+.alternativa .estado { justify-self: start; height: 18px; padding: 0 14px; font-size: 9.5px; margin-top: 8px; }
+
+.centrado { text-align: center; }
+.espacio { height: 8px; }
+
+/* --------------------------------------------------------------------------
+   29. Interacción (app.js)
+   -------------------------------------------------------------------------- */
+[hidden] { display: none !important; }
+button.btn { border: 0; cursor: pointer; font-family: inherit; }
+button.btn--secundario { border: 2px solid var(--coral); }
+button:disabled { cursor: not-allowed; }
+.campo input:focus-visible,
+.btn:focus-visible,
+.chip:focus-visible { outline: 3px solid rgb(112 175 196 / 0.6); outline-offset: 2px; }
+
+/* Menú lateral */
+.cajon { position: fixed; inset: 0; z-index: 50; display: grid; grid-template-rows: auto 1fr; pointer-events: none; }
+.cajon__panel {
+  max-width: 402px; width: 100%; margin: 64px auto 0;
+  transform: translateY(-12px); opacity: 0; transition: transform .2s ease, opacity .2s ease;
+  box-shadow: 0 12px 30px rgb(0 41 65 / 0.18);
+}
+.cajon__velo { border: 0; background: rgb(0 41 65 / 0.5); opacity: 0; transition: opacity .2s ease; max-width: 402px; width: 100%; margin: 0 auto; }
+.cajon.is-abierto { pointer-events: auto; }
+.cajon.is-abierto .cajon__panel { transform: none; opacity: 1; }
+.cajon.is-abierto .cajon__velo { opacity: 1; }
+.menu-panel .btn--secundario { margin-top: 12px; height: 48px; font-size: var(--fs-base); }
+
+/* Aviso flotante */
+.toast {
+  position: fixed; left: 50%; bottom: 24px; z-index: 60;
+  max-width: 360px; width: calc(100% - 40px);
+  padding: 12px 16px; border-radius: var(--r-sm);
+  background: var(--azul-noche); color: var(--blanco);
+  font-size: var(--fs-sm); text-align: center;
+  box-shadow: 0 8px 24px rgb(0 41 65 / 0.25);
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.toast.is-visible { transform: translate(-50%, 0); opacity: 1; }
+
+/* Quitar de Mi lista */
+.btn-quitar {
+  padding: 2px 10px; border-radius: var(--r-pill);
+  border: 1.5px solid var(--borde); background: var(--blanco);
+  color: var(--texto); font: 700 var(--fs-badge) var(--fuente);
+}
+.btn-quitar:hover { border-color: var(--coral); color: var(--coral); }
+.item-lista a { color: inherit; }
+.item-lista .item-precio__info { display: block; }
+
+.demo-nota { padding: 8px 12px; border-radius: 10px; background: var(--azul-hielo); }
+button.escaner { cursor: pointer; font: inherit; }
+button.escaner:hover .escaner__texto { color: var(--blanco); }
+
+/* --------------------------------------------------------------------------
+   30. Versión PHP
+   -------------------------------------------------------------------------- */
+a.buscador { color: inherit; text-decoration: none; }
+.buscador__falso { flex: 1; font-size: var(--fs-lg); color: var(--texto-suave); }
+.buscador--activo { border: 2px solid var(--azul-medio); }
+.buscador__borrar { font-size: 24px; line-height: 1; color: var(--texto-suave); padding: 0 4px; }
+.buscador__borrar:hover { color: var(--coral); }
+.buscador input[type="search"]::-webkit-search-cancel-button { display: none; }
+
+.lista-sugerencias {
+  display: grid; background: var(--blanco); border: var(--borde-fino);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.sugerencia {
+  min-height: 52px; padding: 8px 18px 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  color: var(--azul-noche); font-size: var(--fs-base);
+  border-bottom: 1px solid var(--linea);
+}
+.sugerencia:last-child { border-bottom: 0; }
+.sugerencia:hover { background: var(--fondo); }
+.sugerencia > span:nth-child(2) { flex: 1; }
+.sugerencia small { display: block; font-size: var(--fs-meta); color: var(--coral); font-weight: 700; }
+.sugerencia--producto img { border-radius: 10px; background: var(--grad-foto); }
+
+a.opcion__nombre { color: var(--azul-noche); }
+a.item-precio, a.recompensa, a.banner-plus { color: inherit; }
+a.banner-plus .banner-plus__titulo { color: var(--blanco); }
+.recompensa { padding: 10px 16px 10px 10px; }
+.botones form .btn { width: 100%; }
+.cajon[hidden] { display: none !important; }
+.foto-producto__imagen { position: relative; overflow: hidden; }
+.foto-producto__imagen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.producto__foto { position: relative; }
+.producto__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* --------------------------------------------------------------------------
+   31. Mascota animada (como en el prototipo de Figma)
+   Cada versión tiene su movimiento en bucle; al tocarla da un salto.
+   -------------------------------------------------------------------------- */
+.mascota {
+  position: relative; display: grid; place-items: center;
+  width: 130px; height: 140px; margin: 0 auto; padding: 0;
+  border: 0; background: none; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mascota img { width: 100%; height: 100%; object-fit: contain; transform-origin: 50% 92%; position: relative; z-index: 1; }
+.mascota::after {                       /* sombra en el piso */
+  content: ""; position: absolute; left: 50%; bottom: -2px; width: 46%; height: 9px;
+  border-radius: 50%; background: rgb(0 41 65 / 0.18); transform: translateX(-50%);
+  transform-origin: center;
+}
+.mascota--circulo { width: 150px; height: 150px; border-radius: 50%; background: var(--celeste-icono); }
+.mascota--circulo img { width: 78%; height: 78%; }
+.mascota--circulo::after { bottom: 14px; width: 34%; }
+.mascota:focus-visible { outline: 3px solid rgb(112 175 196 / 0.6); outline-offset: 4px; border-radius: 50%; }
+
+.mascota--saluda img  { animation: masc-saluda 1.2s ease-in-out infinite alternate; }
+.mascota--celebra img { animation: masc-brinca .9s ease-in-out infinite alternate; }
+.mascota--busca img   { animation: masc-busca 1.8s ease-in-out infinite alternate; }
+.mascota--dormido img { animation: masc-respira 2.8s ease-in-out infinite alternate; }
+.mascota--sinwifi img { animation: masc-tambalea 1.6s ease-in-out infinite alternate; }
+.mascota--saluda::after, .mascota--celebra::after, .mascota--busca::after, .mascota--sinwifi::after { animation: masc-sombra .9s ease-in-out infinite alternate; }
+.mascota--saluda::after { animation-duration: 1.2s; }
+.mascota--busca::after, .mascota--sinwifi::after { animation-duration: 1.8s; }
+.mascota.is-salto img { animation: masc-salto .65s cubic-bezier(.3,.7,.4,1) 1; }
+.mascota.is-salto::after { animation: masc-sombra-salto .65s ease 1; }
+
+@keyframes masc-saluda   { from { transform: translateY(0) rotate(0); } to { transform: translateY(-4px) rotate(8deg); } }
+@keyframes masc-brinca   { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+@keyframes masc-busca    { from { transform: rotate(-9deg) translateY(0); } to { transform: rotate(9deg) translateY(-2px); } }
+@keyframes masc-respira  { from { transform: translateY(0) scale(1); } to { transform: translateY(-3px) scale(1.03); } }
+@keyframes masc-tambalea { from { transform: rotate(-7deg); } to { transform: rotate(7deg) translateY(-2px); } }
+@keyframes masc-sombra   { from { transform: translateX(-50%) scaleX(1); opacity: 1; } to { transform: translateX(-50%) scaleX(.82); opacity: .6; } }
+@keyframes masc-salto {
+  0% { transform: translateY(0) scale(1, 1); } 18% { transform: translateY(2px) scale(1.06, .94); }
+  50% { transform: translateY(-28px) rotate(-6deg) scale(.98, 1.03); } 80% { transform: translateY(0) scale(1.04, .96); } 100% { transform: translateY(0) scale(1); }
+}
+@keyframes masc-sombra-salto { 50% { transform: translateX(-50%) scaleX(.6); opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .mascota img, .mascota::after { animation: none !important; } }
+
+/* Mascota que saluda en el hero de Inicio */
+.hero { position: relative; }
+.hero__mascota { position: absolute; top: 14px; right: 16px; }
+.hero__mascota .mascota { width: 76px; height: 80px; }
+.hero__mascota .mascota::after { width: 40%; height: 6px; }
+
+/* Panel "No hay comercios abiertos" */
+.sin-abiertos {
+  display: grid; justify-items: center; gap: 8px; text-align: center;
+  padding: 22px 18px; border-radius: var(--r-xl); background: #ddeff6;
+}
+.sin-abiertos .btn { margin-top: 6px; }
+
+/* --------------------------------------------------------------------------
+   32. Ficha de comercio (diseño nuevo)
+   -------------------------------------------------------------------------- */
+.subtitulo-con-etiqueta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.subtitulo-con-etiqueta .estado { height: 20px; font-size: 10px; }
+.info-comercio li span { display: inline; }
+.item-precio__lado { text-align: right; }
+.item-precio__unidad { display: block; font-size: 11px; color: var(--texto); line-height: 1.2; }
+.item-precio__consultar { font-size: var(--fs-sm); font-weight: 700; color: var(--texto); }
+.item-precio .estado--nota { margin-top: 6px; }
+.info-extra { display: grid; gap: 4px; }
+.info-extra__titulo { font-size: var(--fs-chip); font-weight: 700; color: var(--azul-noche); }
+.info-extra p:not(.info-extra__titulo) { font-size: var(--fs-chip); color: var(--texto); }
