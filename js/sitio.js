@@ -228,12 +228,12 @@
   P.mapa = () => {
     const cat = CAT_COMERCIO[get('cat')] ? get('cat') : 'barberias';
     const cs = D.comercios.filter(c => c.categoria === cat);
-    const sel = cs.find(c => c.slug === get('c')) || [...cs].sort((a, b) => a.desde - b.desde)[0];
-    const abiertos = cs.filter(abierto);
+    const sel = cs.find(c => c.slug === get('c')) || [...cs].filter(c => !c.proximamente).sort((a, b) => a.desde - b.desde)[0];
+    const abiertos = cs.filter(c => !c.proximamente && abierto(c));
     cabecera_y('Mapa · ' + CAT_COMERCIO[cat]);
     let sin = '';
     if (!abiertos.length) {
-      const abre = Math.min(...cs.map(c => c.abre));
+      const abre = Math.min(...cs.filter(c => !c.proximamente).map(c => c.abre));
       const alterna = Object.keys(CAT_COMERCIO).find(k => k !== cat && D.comercios.some(c => c.categoria === k && abierto(c)));
       sin = `<section class="sin-abiertos">${mascota('dormido', true)}<h2 class="seccion__titulo">No hay comercios abiertos ahora</h2><p class="estado-vacio__texto">Las ${CAT_COMERCIO[cat].toLowerCase()} cerca de la UCA abren a las ${hora_ampm(abre)}.</p>`
         + (alterna ? `<a class="btn btn--primario" href="${url('mapa', { cat: alterna })}">Ver ${CAT_COMERCIO[alterna].toLowerCase()} abiertas</a>` : '') + '</section>';
@@ -246,13 +246,13 @@
       <rect x="82" y="0" width="140" height="62" rx="6" fill="#cfe8cf"/><rect x="240" y="288" width="122" height="92" rx="6" fill="#cfe8cf"/><rect x="0" y="68" width="362" height="12" fill="#fde9a8"/><rect x="0" y="345" width="190" height="35" fill="#aadaff"/>
       <circle cx="122" cy="320" r="22" fill="#4f8ef7" fill-opacity=".18"/><circle cx="122" cy="320" r="8" fill="#4f8ef7" stroke="#fff" stroke-width="3"/>
       <text x="126" y="30" font-size="8.5" fill="#3c7a3c" font-family="Poppins">Parque UCA</text><text x="20" y="117" font-size="8.5" fill="#5f6368" font-family="Poppins">Blvd. Campus</text><text x="156" y="248" font-size="8.5" fill="#5f6368" font-family="Poppins">Calle Central</text></svg>
-      ${cs.map(c => `<a class="pin${sel && c.id === sel.id ? ' is-activo' : ''}" href="${url('mapa', { cat, c: c.slug })}" style="left:${c.pin_x}px;top:${c.pin_y}px" aria-label="${e(c.nombre)}"><span class="pin__precio">${dinero(c.desde)}</span><img class="pin__foto" src="${e(img(c.pin))}" alt=""></a>`).join('')}
+      ${cs.map(c => `<a class="pin${sel && c.id === sel.id ? ' is-activo' : ''}" href="${url('mapa', { cat, c: c.slug })}" style="left:${c.pin_x}px;top:${c.pin_y}px" aria-label="${e(c.nombre)}"><span class="pin__precio">${c.proximamente ? 'Pronto' : dinero(c.desde)}</span><img class="pin__foto" src="${e(img(c.pin))}" alt=""></a>`).join('')}
       <span class="mapa__marca">Google Maps</span></div>
       ${sel ? `<article class="comercio-destacado"><img class="comercio-destacado__foto" src="${e(img(sel.foto))}" alt=""><div class="comercio-destacado__info"><p class="comercio-destacado__nombre">${e(sel.nombre)}</p><p class="comercio__meta">${e(sel.distancia)}</p>
-        <span>${abierto(sel) ? estado('Abierto ahora', 'disponible estado--grande') : estado('Cerrado · abre ' + hora_ampm(sel.abre), 'cerrado estado--grande')}</span><p class="comercio-destacado__precio"><small>desde</small>${dinero(sel.desde)}</p></div></article>
+        <span>${sel.proximamente ? estado('Próximamente', 'nueva estado--grande') : abierto(sel) ? estado('Abierto ahora', 'disponible estado--grande') : estado('Cerrado · abre ' + hora_ampm(sel.abre), 'cerrado estado--grande')}</span>${sel.proximamente ? '' : `<p class="comercio-destacado__precio"><small>desde</small>${dinero(sel.desde)}</p>`}</div></article>
         <div class="botones botones--par"><a class="btn btn--secundario btn--medio" href="${e(mapa_google(sel.nombre))}" target="_blank" rel="noopener">Cómo llegar</a><a class="btn btn--oscuro btn--medio" href="${url('comercio', { c: sel.slug })}">Ver precios</a></div>` : ''}
       ${sin}<h2 class="subtitulo" style="margin-top:10px">Todos los comercios</h2><div class="lista">
-      ${cs.map(c => `<a class="menu-item" href="${url('comercio', { c: c.slug })}"><div><strong>${e(c.nombre)}</strong><small>${e(c.distancia)} · desde ${dinero(c.desde)}</small></div><span style="display:grid;justify-items:end;gap:2px">${abierto(c) ? estado('Abierto', 'disponible estado--grande') : estado('Cerrado', 'cerrado estado--grande') + `<small style="font-size:11px;color:var(--texto)">Abre ${h >= c.cierra ? 'mañana ' : ''}${hora_ampm(c.abre)}</small>`}</span></a>`).join('')}</div></main>`;
+      ${cs.map(c => `<a class="menu-item" href="${url('comercio', { c: c.slug })}"><div><strong>${e(c.nombre)}</strong><small>${c.proximamente ? 'Muy pronto en Nuvic' : e(c.distancia) + ' · desde ' + dinero(c.desde)}</small></div><span style="display:grid;justify-items:end;gap:2px">${c.proximamente ? estado('Próximamente', 'nueva estado--grande') : abierto(c) ? estado('Abierto', 'disponible estado--grande') : estado('Cerrado', 'cerrado estado--grande') + `<small style="font-size:11px;color:var(--texto)">Abre ${h >= c.cierra ? 'mañana ' : ''}${hora_ampm(c.abre)}</small>`}</span></a>`).join('')}</div></main>`;
   };
 
   const ILUS_CATEGORIA = { farmacias: 'productos/paracetamol-500-mg-grande.svg', copias: 'productos/copias-b-n-x20-3.svg', librerias: 'productos/cuaderno-80-hojas-2.svg', floristerias: 'productos/ramo-de-rosas-4.svg',
@@ -260,16 +260,25 @@
   // Fotos del comercio: se deslizan con el dedo (o arrastrando con el mouse). Sin foto, se muestra la ilustración de su categoría.
   const carrusel = c => {
     if (!c.fotos.length) return `<div class="portada portada--ilustracion"><img src="${e(img(ILUS_CATEGORIA[c.categoria]))}" alt=""></div>`;
-    const slides = c.fotos.map((f, i) => { const vertical = !/\/portada-/.test(f);
+    const alto = c.foto_alto || 190;
+    const slides = c.fotos.map((f, i) => { const vertical = /\/(mapa|oferta|inicio|escaner)-/.test(f);
       return `<div class="carrusel__foto${vertical ? ' carrusel__foto--vertical' : ''}"${vertical ? ` style="--fondo:url('${e(img(f))}')"` : ''}><img src="${e(img(f))}" alt="${e(c.nombre)} · foto ${i + 1} de ${c.fotos.length}"${i ? ' loading="lazy"' : ''} draggable="false"></div>`; }).join('');
-    if (c.fotos.length === 1) return `<div class="carrusel">${slides}</div>`;
-    return `<div class="carrusel" data-carrusel><div class="carrusel__pista" tabindex="0" aria-label="Fotos de ${e(c.nombre)}">${slides}</div>`
+    if (c.fotos.length === 1) return `<div class="carrusel" style="--alto:${alto}px">${slides}</div>`;
+    return `<div class="carrusel" style="--alto:${alto}px" data-carrusel><span class="carrusel__contador" data-contador>1/${c.fotos.length}</span><div class="carrusel__pista" tabindex="0" aria-label="Fotos de ${e(c.nombre)}">${slides}</div>`
       + `<div class="carrusel__puntos">${c.fotos.map((_, i) => `<button type="button" class="carrusel__punto${i ? '' : ' is-activo'}" aria-label="Ver foto ${i + 1}"></button>`).join('')}</div></div>`;
   };
   P.comercio = () => {
     const c = comercio(get('c')); if (!c) return no_encontrado();
+    if (c.proximamente) { cabecera_y(c.nombre);
+      return `<main class="pagina"><p class="migas"><a href="index.html">Inicio</a> › <a href="${url('mapa', { cat: c.categoria })}">Mapa</a> › ${e(c.nombre)}</p>
+        <div class="portada portada--ilustracion portada--pronto">${mascota('busca')}<span class="estado estado--nueva estado--grande">Próximamente</span></div>
+        <div><h1 class="pagina__titulo pagina__titulo--detalle">${e(c.nombre)}</h1><p class="pagina__subtitulo pagina__subtitulo--sm">${e(c.descripcion)}</p></div>
+        <section class="tarjeta"><ul class="info-comercio" style="list-style:none;margin:0;padding:0 0 0 12px"><li><img src="img/iconos/icono-ubicacion.svg" alt="" width="20">Dirección y horario muy pronto</li></ul></section>
+        <section class="pronto"><h2 class="seccion__titulo">Muy pronto en Nuvic</h2><p>Estamos preparando los precios y servicios de ${e(c.nombre)}. Pronto podrás compararlos aquí.</p><p><strong>¡Vuelve a visitarnos!</strong></p></section>
+        <div class="botones"><a class="btn btn--primario" href="index.html">Volver al inicio</a><a class="btn btn--secundario" href="${url('mapa', { cat: c.categoria })}">Ver comercios participantes</a></div></main>`; }
     const items = D.precios.filter(r => r.c === c.id).map(r => ({ ...r, ...D.productos.find(p => p.id === r.p), precio: r.precio, descripcion: r.descripcion }));
     const secs = {}; items.forEach(it => (secs[it.seccion] = secs[it.seccion] || []).push(it));
+    if (Object.keys(secs).length > 1) delete secs['Más buscados'];   // si el comercio tiene su lista del Figma, no repetir
     const ago = items.filter(i => !i.disponible), maps = mapa_google(c.nombre);
     cabecera_y(c.nombre);
     const n = Object.keys(secs).length;
@@ -288,6 +297,7 @@
           <div class="item-precio__info"><p class="item-precio__nombre">${e(it.nombre)}</p>${it.descripcion ? `<p class="item-precio__meta">${e(it.descripcion)}</p>` : ''}${it.etiqueta ? estado(it.etiqueta, 'nota') : ''}</div>
           <div class="item-precio__lado">${lado}${ok ? '' : estado('No disponible', 'no-disponible')}</div></${fin}>`; }).join('') + '</div>').join('')}
       ${c.extra_titulo ? `<section class="tarjeta info-extra"><p class="info-extra__titulo">${e(c.extra_titulo)}</p>${c.extra_texto.split('\n').map(l => `<p>${e(l)}</p>`).join('')}</section>` : ''}
+      ${c.slug === 'gasolinera-uno' ? '<section class="pronto pronto--fila"><span class="estado estado--nueva">Próximamente</span><h2 class="seccion__titulo">Comparar gasolineras</h2><p>Por ahora UNO La Sultana es la única gasolinera. Pronto podrás comparar precios con más gasolineras cerca de la UCA.</p></section>' : ''}
       <p class="nota">${e(c.nota_precios)}</p><div class="botones">${c.contacto_url
         ? `<a class="btn btn--primario" href="${e(c.contacto_url)}"${c.contacto_url.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${e(c.contacto_texto)}</a><a class="btn btn--secundario" href="${e(maps)}" target="_blank" rel="noopener">Cómo llegar en Google Maps</a>`
         : `<a class="btn btn--primario" href="${e(maps)}" target="_blank" rel="noopener">Cómo llegar en Google Maps</a>`}</div></main>`;

@@ -51,7 +51,8 @@
     const pista = $('.carrusel__pista', c), puntos = $$('.carrusel__punto', c);
     const actual = () => Math.round(pista.scrollLeft / pista.clientWidth);
     const ir = i => pista.scrollTo({ left: Math.max(0, Math.min(puntos.length - 1, i)) * pista.clientWidth, behavior: 'smooth' });
-    pista.addEventListener('scroll', () => puntos.forEach((p, i) => p.classList.toggle('is-activo', i === actual())), { passive: true });
+    const cont = $('[data-contador]', c);
+    pista.addEventListener('scroll', () => { puntos.forEach((p, i) => p.classList.toggle('is-activo', i === actual())); if (cont) cont.textContent = (actual() + 1) + '/' + puntos.length; }, { passive: true });
     puntos.forEach((p, i) => p.addEventListener('click', () => ir(i)));
     pista.addEventListener('keydown', e => { if (e.key === 'ArrowRight') ir(actual() + 1); if (e.key === 'ArrowLeft') ir(actual() - 1); });
     arrastrable(pista, dx => { const pos = pista.scrollLeft / pista.clientWidth; ir(Math.abs(dx) < 40 ? Math.round(pos) : dx < 0 ? Math.ceil(pos) : Math.floor(pos)); });
