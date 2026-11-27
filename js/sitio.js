@@ -255,6 +255,17 @@
       ${cs.map(c => `<a class="menu-item" href="${url('comercio', { c: c.slug })}"><div><strong>${e(c.nombre)}</strong><small>${e(c.distancia)} · desde ${dinero(c.desde)}</small></div><span style="display:grid;justify-items:end;gap:2px">${abierto(c) ? estado('Abierto', 'disponible estado--grande') : estado('Cerrado', 'cerrado estado--grande') + `<small style="font-size:11px;color:var(--texto)">Abre ${h >= c.cierra ? 'mañana ' : ''}${hora_ampm(c.abre)}</small>`}</span></a>`).join('')}</div></main>`;
   };
 
+  const ILUS_CATEGORIA = { farmacias: 'productos/paracetamol-500-mg-grande.svg', copias: 'productos/copias-b-n-x20-3.svg', librerias: 'productos/cuaderno-80-hojas-2.svg', floristerias: 'productos/ramo-de-rosas-4.svg',
+    salones: 'productos/kairos/manicura-express.png', barberias: 'productos/corte-de-cabello-4.svg', lavanderias: 'productos/lavado-y-secado.svg', gasolineras: 'productos/gasolinera-uno/gasolina-regular.png' };
+  // Fotos del comercio: se deslizan con el dedo (o arrastrando con el mouse). Sin foto, se muestra la ilustración de su categoría.
+  const carrusel = c => {
+    if (!c.fotos.length) return `<div class="portada portada--ilustracion"><img src="${e(img(ILUS_CATEGORIA[c.categoria]))}" alt=""></div>`;
+    const slides = c.fotos.map((f, i) => { const vertical = !/\/portada-/.test(f);
+      return `<div class="carrusel__foto${vertical ? ' carrusel__foto--vertical' : ''}"${vertical ? ` style="--fondo:url('${e(img(f))}')"` : ''}><img src="${e(img(f))}" alt="${e(c.nombre)} · foto ${i + 1} de ${c.fotos.length}"${i ? ' loading="lazy"' : ''} draggable="false"></div>`; }).join('');
+    if (c.fotos.length === 1) return `<div class="carrusel">${slides}</div>`;
+    return `<div class="carrusel" data-carrusel><div class="carrusel__pista" tabindex="0" aria-label="Fotos de ${e(c.nombre)}">${slides}</div>`
+      + `<div class="carrusel__puntos">${c.fotos.map((_, i) => `<button type="button" class="carrusel__punto${i ? '' : ' is-activo'}" aria-label="Ver foto ${i + 1}"></button>`).join('')}</div></div>`;
+  };
   P.comercio = () => {
     const c = comercio(get('c')); if (!c) return no_encontrado();
     const items = D.precios.filter(r => r.c === c.id).map(r => ({ ...r, ...D.productos.find(p => p.id === r.p), precio: r.precio, descripcion: r.descripcion }));
@@ -262,7 +273,7 @@
     const ago = items.filter(i => !i.disponible), maps = mapa_google(c.nombre);
     cabecera_y(c.nombre);
     const n = Object.keys(secs).length;
-    return `<main class="pagina"><p class="migas"><a href="index.html">Inicio</a> › <a href="${url('mapa', { cat: c.categoria })}">Mapa</a> › ${e(c.nombre)}</p><img class="portada" src="${e(img(c.portada))}" alt="">
+    return `<main class="pagina"><p class="migas"><a href="index.html">Inicio</a> › <a href="${url('mapa', { cat: c.categoria })}">Mapa</a> › ${e(c.nombre)}</p>${carrusel(c)}
       <div><h1 class="pagina__titulo pagina__titulo--detalle">${e(c.nombre)}</h1><p class="pagina__subtitulo pagina__subtitulo--sm subtitulo-con-etiqueta">${e(c.descripcion)}${c.ejemplo ? ' <span class="estado estado--nueva">Precios de ejemplo</span>' : ''}</p></div>
       <section class="tarjeta"><ul class="info-comercio" style="list-style:none;margin:0;padding:0 0 0 12px"><li><img src="img/iconos/icono-ubicacion.svg" alt="" width="20">${e(c.direccion)}</li>
       <li><img src="img/iconos/icono-horario.svg" alt="" width="20"><span>${e(c.horario)} · ${abierto(c) ? '<span style="color:var(--verde)">Abierto ahora</span>' : '<span style="color:var(--coral)">Cerrado</span>'}</span></li>
@@ -273,7 +284,7 @@
         const ok = it.disponible, tag = it.comparable ? `a href="${url('comparar', { p: it.slug })}"` : 'article', fin = it.comparable ? 'a' : 'article';
         const lado = it.precio === null ? '<span class="item-precio__consultar">Consultar</span>'
           : (it.desde ? '<small class="item-precio__unidad">desde</small>' : '') + `<span class="item-precio__precio">${dinero(it.precio)}</span>` + (it.unidad ? `<small class="item-precio__unidad">${e(it.unidad)}</small>` : '');
-        return `<${tag} class="item-precio item-precio--alto${ok ? '' : ' is-agotado'}"><img class="item-precio__foto item-precio__foto--lg" src="${e(img(it.imagen))}" alt="">
+        return `<${tag} class="item-precio item-precio--alto${ok ? '' : ' is-agotado'}"><img class="item-precio__foto item-precio__foto--lg${/\.png$/.test(it.imagen) ? ' item-precio__foto--ilustracion' : ''}" src="${e(img(it.imagen))}" alt="">
           <div class="item-precio__info"><p class="item-precio__nombre">${e(it.nombre)}</p>${it.descripcion ? `<p class="item-precio__meta">${e(it.descripcion)}</p>` : ''}${it.etiqueta ? estado(it.etiqueta, 'nota') : ''}</div>
           <div class="item-precio__lado">${lado}${ok ? '' : estado('No disponible', 'no-disponible')}</div></${fin}>`; }).join('') + '</div>').join('')}
       ${c.extra_titulo ? `<section class="tarjeta info-extra"><p class="info-extra__titulo">${e(c.extra_titulo)}</p>${c.extra_texto.split('\n').map(l => `<p>${e(l)}</p>`).join('')}</section>` : ''}
@@ -343,16 +354,28 @@
   P['contrasena-actualizada'] = () => { cabecera_y('Contraseña actualizada'); return '<main class="pagina">' + vacio(null, 'Contraseña actualizada', 'Ya puedes entrar con tu nueva contraseña.', false, true, '', 'celebra')
     + '<a class="btn btn--primario btn--grande" href="login.html">Iniciar sesión</a></main>'; };
   P.perfil = () => {
-    const u = exigir_sesion(), plus = plus_activo(u), n = lista_de(u).length; cabecera_y('Perfil');
+    const u = exigir_sesion(), n = lista_de(u).length; cabecera_y('Perfil');
     return `<main class="pagina"><div><h1 class="pagina__titulo">Perfil</h1></div><section class="perfil"><span class="avatar">${e(iniciales(u.nombre))}</span><div><p class="perfil__nombre">${e(u.nombre)}</p>
       <p class="perfil__meta">${e(u.carrera || 'Carné ' + u.carne)}</p>${estado('Cuenta UCA verificada', 'verificada')}</div></section>
       <div class="cifras"><div class="cifra"><strong>${u.puntos}</strong><span>Puntos</span></div><div class="cifra"><strong>${u.comparaciones}</strong><span>Comparaciones</span></div></div>
       <div class="lista"><a class="menu-item" href="mi-lista.html"><div><strong>Mi lista</strong><small>${plural(n, 'producto guardado', 'productos guardados')}</small></div>${flecha()}</a>
       <a class="menu-item" href="mis-puntos.html"><div><strong>Historial de puntos</strong><small>Compras y canjes</small></div>${flecha()}</a>
-      <a class="menu-item" href="${plus ? 'mi-membresia.html' : 'membresia.html'}"><div><strong>Nuvic Plus</strong><small>${plus ? 'Activo hasta el ' + fecha(u.plus_hasta) : 'Ahorra más con la membresía'}</small></div>${flecha()}</a></div>
-      <form data-accion="salir"><button class="btn btn--secundario" type="submit">Cerrar sesión</button></form>
+      <a class="menu-item" href="ayuda.html"><div><strong>Ayuda y soporte</strong><small>Preguntas frecuentes</small></div>${flecha()}</a></div>
+      <form class="perfil__salir" data-accion="salir"><button class="btn btn--secundario" type="submit">Cerrar sesión</button></form>
       <p class="nota demo-nota">Esta es una demo: tu cuenta y tus puntos se guardan solo en este navegador. <button class="enlace" type="button" data-reiniciar style="background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline">Reiniciar la demo</button></p></main>`;
   };
+
+  P.ayuda = () => { cabecera_y('Ayuda y soporte');
+    const faq = [['¿Nuvic vende productos?', 'No. Nuvic solo compara precios de los comercios cerca de la UCA. La compra y el pago los haces en el comercio.'],
+      ['¿De dónde salen los precios?', 'Son precios de referencia que reportan los comercios. Pueden cambiar; la etiqueta “Precios de ejemplo” indica que aún no son los del comercio.'],
+      ['¿Cómo sumo puntos?', 'Después de comprar en un comercio participante, abre Escanear QR y apunta al código que te muestran. También puedes escribir el código del ticket.'],
+      ['¿Cómo canjeo mis puntos?', 'En Recompensas elige una, confirma el canje y muestra el código en el comercio.'],
+      ['¿Qué incluye Nuvic Plus?', 'Ofertas exclusivas, puntos x2 en cada compra, alertas de precio y recompensas solo para miembros. Puedes cancelarla cuando quieras.'],
+      ['Olvidé mi contraseña', 'En Iniciar sesión toca “¿Olvidaste tu contraseña?” y te enviaremos un enlace a tu correo institucional.']];
+    return `<main class="pagina"><p class="migas"><a href="perfil.html">Perfil</a> › Ayuda y soporte</p><div><h1 class="pagina__titulo">Ayuda y soporte</h1><p class="pagina__subtitulo">Preguntas frecuentes</p></div>
+      <div class="lista">${faq.map(([q, a], i) => `<details class="pregunta-frecuente"${i ? '' : ' open'}><summary>${e(q)}</summary><p>${e(a)}</p></details>`).join('')}</div>
+      <a class="btn btn--secundario" href="mailto:soporte@nuvic.app?subject=Ayuda%20con%20Nuvic">Escribir a soporte</a>
+      <a class="btn btn--primario" href="${plus_activo(usuario()) ? 'mi-membresia.html' : 'membresia.html'}">Conocer Nuvic Plus</a></main>`; };
 
   /* ---- puntos */
   P['mis-puntos'] = () => {
@@ -365,16 +388,27 @@
       <h2 class="subtitulo" style="margin-top:22px">Historial de puntos</h2><div class="lista">${mov.map(m => `<div class="movimiento"><div><strong>${e(m.titulo)}</strong><small>${e(m.tipo)} · ${e(fecha_hora(m.creado))}</small></div><span class="movimiento__puntos${m.puntos < 0 ? ' is-canje' : ''}">${(m.puntos > 0 ? '+' : '−') + Math.abs(m.puntos)} pts</span></div>`).join('')}
       ${mov.length ? '' : '<p class="nota">Todavía no tienes movimientos. Escanea el QR de tu próxima compra.</p>'}</div></main>`;
   };
+  const ultima_compra = u => E.movimientos.filter(m => m.uid === u.id && m.tipo === 'Compra').sort((a, b) => (fechaDe(b.creado) - fechaDe(a.creado)) || (b.id - a.id))[0];
   P['escanear-qr'] = () => {
     const u = exigir_sesion(); cabecera_y('Escanear QR');
-    const ult = E.movimientos.filter(m => m.uid === u.id && m.tipo === 'Compra').sort((a, b) => (fechaDe(b.creado) - fechaDe(a.creado)) || (b.id - a.id))[0];
+    if (get('codigo')) { const r = validar_codigo(u, get('codigo')); if (r.ok) ir(url('puntos-validados', { m: r.mid })); aviso(r.error); ir('escanear-qr.html'); }
+    const ult = ultima_compra(u), cu = ult && D.comercios.find(c => c.nombre === ult.titulo);
     return `<main class="pagina"><p class="migas"><a href="index.html">Inicio</a> › <a href="mis-puntos.html">Mis puntos</a> › Escanear QR</p>
       <div><h1 class="pagina__titulo pagina__titulo--detalle">Escanear QR de compra</h1><p class="pagina__subtitulo pagina__subtitulo--sm">Después de comprar en un comercio participante, escanea el código que te muestra.</p></div>
-      <form data-accion="simular"><button class="escaner" type="submit" style="width:100%;border:0;display:block"><div class="escaner__marco"><span></span></div><p class="escaner__texto">Toca para simular el escaneo del QR</p></button></form>
-      ${ult ? `<div class="comercio" style="border-radius:18px"><div class="comercio__info"><p class="comercio__nombre">${e(ult.titulo)}</p><p class="comercio__meta">${e(ult.detalle)}</p></div>${estado('+' + ult.puntos + ' puntos', 'puntos')}</div>` : ''}
-      <form class="formulario" data-accion="codigo" novalidate>${campo('Ingresar código manual', 'codigo', 'text', 'NV-XXXX', '', ' autocomplete="off" style="text-transform:uppercase"')}${alerta()}<button class="btn btn--secundario" type="submit" style="height:50px">Validar código</button></form>
-      <p class="nota demo-nota">Códigos de prueba: ${D.codigos.map(c => c.codigo).join(' · ')} (cada uno sirve una vez)</p><p class="nota">Nuvic no vende: el pago lo haces en el comercio.</p></main>`;
+      <button class="escaner" type="button" data-escaner aria-label="Abrir la cámara para escanear el código QR"><video class="escaner__video" playsinline muted hidden></video>
+        <div class="escaner__marco"><span></span></div><span class="escaner__linea"></span><p class="escaner__texto" data-escaner-texto>Apunta al código QR del comercio</p></button>
+      ${ult ? `<div class="comercio comercio--compra">${cu ? `<img class="comercio__foto comercio__foto--sm" src="${e(img(cu.foto))}" alt="">` : ''}<div class="comercio__info"><p class="comercio__nombre">${e(ult.titulo)}</p><p class="comercio__meta">${e(ult.detalle)}</p></div>${estado('+' + ult.puntos + ' puntos', 'puntos')}</div>` : ''}
+      <button class="btn btn--secundario" type="button" data-mostrar-codigo>Ingresar código manual</button>
+      <form class="formulario" data-accion="codigo" novalidate hidden>${campo('Código de tu compra', 'codigo', 'text', 'NV-XXXX', '', ' autocomplete="off" style="text-transform:uppercase"')}${alerta()}<button class="btn btn--primario" type="submit" style="height:50px">Validar código</button></form>
+      <p class="nota">Nuvic no vende: el pago lo haces en el comercio.</p>
+      <p class="nota demo-nota">Demo: abre <a class="enlace" href="codigos-qr.html">los códigos QR de prueba</a> en otra pantalla y escanéalos. Cada código suma puntos una sola vez.</p></main>`;
   };
+  P['codigos-qr'] = () => { cabecera_y('Códigos QR de prueba');
+    return `<main class="pagina"><p class="migas"><a href="mis-puntos.html">Mis puntos</a> › Códigos de prueba</p><div><h1 class="pagina__titulo pagina__titulo--detalle">Códigos QR de prueba</h1>
+      <p class="pagina__subtitulo pagina__subtitulo--sm">Simulan el ticket de una compra. Escanéalos desde Escanear QR en Nuvic, o con la cámara de tu celular: abren Nuvic y suman los puntos.</p></div>
+      <div class="tickets">${D.codigos.map(c => { const co = comercioPorId[c.comercio_id];
+        return `<article class="ticket"><img class="ticket__qr" src="img/qr/${e(c.codigo)}.png" alt="Código QR ${e(c.codigo)}" width="150" height="150"><div><p class="ticket__comercio">${e(co.nombre)}</p><p class="ticket__compra">${e(c.compra)} · ${dinero(c.monto)}</p><p class="ticket__codigo">${e(c.codigo)}</p></div></article>`; }).join('')}</div>
+      <a class="btn btn--primario" href="escanear-qr.html">Ir a escanear</a><p class="nota">Cada código suma puntos una sola vez por cuenta. Para volver a usarlos, reinicia la demo desde tu perfil.</p></main>`; };
   P['puntos-validados'] = () => {
     const u = exigir_sesion(), m = E.movimientos.find(x => x.id === +get('m') && x.uid === u.id); if (!m) ir('mis-puntos.html'); cabecera_y('Transacción validada');
     return `<main class="pagina"><div class="estado-vacio">${mascota('celebra')}<h1 class="estado-vacio__titulo" style="font-size:22px">Transacción validada</h1><p class="estado-vacio__resultado">+${m.puntos}</p><p class="estado-vacio__texto" style="font-size:13.5px">puntos sumados a tu cuenta</p></div>
@@ -493,6 +527,16 @@
   };
 
   /* ------------------------------------------------------------- acciones */
+  // Acepta el código escrito (NV-FR10), el texto del QR o el enlace completo (…escanear-qr.html?codigo=NV-FR10)
+  const leer_codigo = t => { const m = String(t || '').toUpperCase().match(/NV-[A-Z0-9]{4}/); return m ? m[0] : String(t || '').trim().toUpperCase(); };
+  const validar_codigo = (u, texto) => {
+    const cod = leer_codigo(texto), cc = D.codigos.find(c => c.codigo === cod);
+    if (!cc) return { ok: false, error: 'Ese código no existe. Revísalo en tu ticket.' };
+    if (E.codigosUsados[u.id + ':' + cod] || E.codigosUsados[cod] === u.id) return { ok: false, error: 'Ese código ya se usó.' };
+    E.codigosUsados[u.id + ':' + cod] = 1;
+    const mid = sumar_puntos(u, CONFIG.puntos_compra * (plus_activo(u) ? 2 : 1), comercioPorId[cc.comercio_id].nombre, 'Compra', cc.compra + ' · ' + dinero(cc.monto));
+    guardar(); return { ok: true, mid };
+  };
   const A = {
     salir() { E.sesion = null; E.comparados = {}; guardar(); aviso('Cerraste sesión'); ir('index.html'); },
     lista() {
@@ -545,11 +589,9 @@
       const mid = sumar_puntos(u, pts, comercioPorId[r.c].nombre, 'Compra', D.productos.find(p => p.id === r.p).nombre + ' · ' + dinero(r.precio)); guardar(); ir(url('puntos-validados', { m: mid }));
     },
     codigo(f) {
-      const u = exigir_sesion(), cod = f.codigo.value.trim().toUpperCase(), cc = D.codigos.find(c => c.codigo === cod);
-      if (!cc) error(f, 'Ese código no existe. Revísalo en tu ticket.', ['codigo']);
-      if (E.codigosUsados[cod]) error(f, 'Ese código ya se usó.', ['codigo']);
-      E.codigosUsados[cod] = u.id;
-      const mid = sumar_puntos(u, CONFIG.puntos_compra * (plus_activo(u) ? 2 : 1), comercioPorId[cc.comercio_id].nombre, 'Compra', cc.compra + ' · ' + dinero(cc.monto)); guardar(); ir(url('puntos-validados', { m: mid }));
+      const r = validar_codigo(exigir_sesion(), f.codigo.value);
+      if (!r.ok) error(f, r.error, ['codigo']);
+      ir(url('puntos-validados', { m: r.mid }));
     },
     canjear() {
       const u = exigir_sesion(), r = recompensa(get('r'));
@@ -597,6 +639,62 @@
     if (f.dataset.confirmar && !f.dataset.ok) return; // primer toque: lo maneja js/app.js
     try { A[f.dataset.accion](f, ev); } catch (err) { if (!['redirigiendo', 'validación'].includes(err.message)) throw err; }
   });
+  /* ---- Escanear QR con la cámara ---- */
+  const JSQR = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';   // lector de QR para navegadores sin BarcodeDetector
+  const escaner = document.querySelector('[data-escaner]');
+  if (escaner) {
+    const video = escaner.querySelector('video'), texto = escaner.querySelector('[data-escaner-texto]'), INICIAL = texto.textContent;
+    const lienzo = document.createElement('canvas'), ctx = lienzo.getContext('2d', { willReadFrequently: true });
+    let flujo = null, activo = false, detector = null, pausa = 0;
+    const decir = t => { texto.textContent = t; };
+    const cargarLector = () => window.jsQR ? Promise.resolve() : new Promise((ok, mal) => {
+      const sc = document.createElement('script'); sc.src = JSQR; sc.async = true; sc.onload = () => window.jsQR ? ok() : mal(new Error('lector')); sc.onerror = () => mal(new Error('lector')); document.head.append(sc);
+    });
+    const detener = () => { activo = false; if (flujo) flujo.getTracks().forEach(t => t.stop()); flujo = null; video.srcObject = null; video.hidden = true; escaner.classList.remove('is-activo'); };
+    const leerCuadro = async () => {
+      if (detector) { const r = await detector.detect(video); return r[0] ? r[0].rawValue : null; }
+      const w = 480, h = Math.round(w * (video.videoHeight / video.videoWidth)) || 360;
+      lienzo.width = w; lienzo.height = h; ctx.drawImage(video, 0, 0, w, h);
+      const r = window.jsQR(ctx.getImageData(0, 0, w, h).data, w, h, { inversionAttempts: 'attemptBoth' });
+      return r ? r.data : null;
+    };
+    const ciclo = async () => {
+      if (!activo) return;
+      if (video.readyState >= 2 && Date.now() > pausa) {
+        let valor = null; try { valor = await leerCuadro(); } catch { /* cuadro ilegible */ }
+        if (valor && activo) {
+          const r = validar_codigo(usuario(), valor);
+          if (r.ok) { detener(); decir('¡Código leído! Sumando tus puntos…'); location.href = url('puntos-validados', { m: r.mid }); return; }
+          decir(r.error + ' Prueba con otro código.'); pausa = Date.now() + 2500;
+          setTimeout(() => { if (activo) decir('Apunta al código QR · toca para detener'); }, 2500);
+        }
+      }
+      setTimeout(ciclo, 120);
+    };
+    escaner.addEventListener('click', async () => {
+      if (activo) { detener(); decir(INICIAL); return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { decir('Este navegador no permite usar la cámara aquí. Usa “Ingresar código manual”.'); return; }
+      decir('Abriendo la cámara…');
+      let paso = 'lector';
+      try {
+        if ('BarcodeDetector' in window) { try { if ((await BarcodeDetector.getSupportedFormats()).includes('qr_code')) detector = new BarcodeDetector({ formats: ['qr_code'] }); } catch { detector = null; } }
+        if (!detector) await cargarLector();
+        paso = 'camara';
+        flujo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+        video.srcObject = flujo; video.hidden = false; await video.play();
+        activo = true; escaner.classList.add('is-activo'); decir('Apunta al código QR · toca para detener'); ciclo();
+      } catch (err) {
+        detener();
+        if (paso === 'lector') decir('No se pudo cargar el lector de QR. Revisa tu conexión o usa “Ingresar código manual”.');
+        else if (err && (err.name === 'NotAllowedError' || err.name === 'SecurityError')) decir('No diste permiso para usar la cámara. Actívalo en el candado de la barra de direcciones o ingresa el código manual.');
+        else decir('No encontramos una cámara disponible. Ingresa el código manual.');
+      }
+    });
+    window.addEventListener('pagehide', detener);
+  }
+  const mostrar = document.querySelector('[data-mostrar-codigo]');
+  if (mostrar) mostrar.addEventListener('click', () => { const f = mostrar.nextElementSibling; f.hidden = false; mostrar.hidden = true; f.querySelector('input').focus(); });
+
   document.addEventListener('click', ev => {
     if (ev.target.closest('[data-reiniciar]')) { localStorage.removeItem(CLAVE); aviso('Reiniciaste la demo'); location.href = 'index.html'; }
   });

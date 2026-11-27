@@ -27,6 +27,36 @@
     m.addEventListener('animationend', e => { if (e.animationName === 'masc-salto') m.classList.remove('is-salto'); });
   });
 
+  /* Arrastrar con el mouse para deslizar (categorías y fotos); con el dedo ya se desliza solo */
+  const arrastrable = (el, alSoltar) => {
+    let x0 = 0, s0 = 0, abajo = false, movio = false;
+    el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; abajo = true; movio = false; x0 = e.clientX; s0 = el.scrollLeft; });
+    window.addEventListener('pointermove', e => {
+      if (!abajo) return; const dx = e.clientX - x0;
+      if (!movio && Math.abs(dx) > 5) { movio = true; el.classList.add('is-arrastrando'); }
+      if (movio) { el.scrollLeft = s0 - dx; e.preventDefault(); }
+    });
+    window.addEventListener('pointerup', e => { if (!abajo) return; abajo = false; if (movio) { if (alSoltar) alSoltar(e.clientX - x0); setTimeout(() => el.classList.remove('is-arrastrando'), alSoltar ? 450 : 0); } });
+    el.addEventListener('click', e => { if (movio) { e.preventDefault(); e.stopPropagation(); movio = false; } }, true);
+    el.addEventListener('dragstart', e => e.preventDefault());
+  };
+  $$('.chips--fila').forEach(fila => {
+    const fin = () => fila.classList.toggle('is-final', fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 4);
+    fila.addEventListener('scroll', fin, { passive: true }); fin();
+    const activo = $('.is-activo', fila);
+    if (activo && activo.offsetLeft + activo.offsetWidth > fila.clientWidth) fila.scrollLeft = activo.offsetLeft - 20;
+    arrastrable(fila);
+  });
+  $$('[data-carrusel]').forEach(c => {
+    const pista = $('.carrusel__pista', c), puntos = $$('.carrusel__punto', c);
+    const actual = () => Math.round(pista.scrollLeft / pista.clientWidth);
+    const ir = i => pista.scrollTo({ left: Math.max(0, Math.min(puntos.length - 1, i)) * pista.clientWidth, behavior: 'smooth' });
+    pista.addEventListener('scroll', () => puntos.forEach((p, i) => p.classList.toggle('is-activo', i === actual())), { passive: true });
+    puntos.forEach((p, i) => p.addEventListener('click', () => ir(i)));
+    pista.addEventListener('keydown', e => { if (e.key === 'ArrowRight') ir(actual() + 1); if (e.key === 'ArrowLeft') ir(actual() - 1); });
+    arrastrable(pista, dx => { const pos = pista.scrollLeft / pista.clientWidth; ir(Math.abs(dx) < 40 ? Math.round(pos) : dx < 0 ? Math.ceil(pos) : Math.floor(pos)); });
+  });
+
   /* Menú lateral */
   const boton = $('.btn-menu'), cajon = $('.cajon');
   if (boton && cajon) {

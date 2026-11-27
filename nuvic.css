@@ -243,7 +243,24 @@ button { font: inherit; cursor: pointer; border: 0; }
   font-size: var(--fs-chip);
 }
 .chip.is-activo { background: var(--azul-noche); border-color: var(--azul-noche); color: var(--blanco); }
-.chips--fila { margin-top: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.chips--fila {                   /* fila de categorías que se desliza */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--margen);
+  scrollbar-width: none;
+  margin-inline: calc(var(--margen) * -1);
+  padding: 2px var(--margen);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+          mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+  cursor: grab;
+  user-select: none;
+}
+.chips--fila.is-final { -webkit-mask-image: none; mask-image: none; }
+.chips--fila::-webkit-scrollbar { display: none; }
+.chips--fila .chip { flex: none; scroll-snap-align: start; }
+.chips--fila.is-arrastrando { cursor: grabbing; scroll-snap-type: none; }
 
 /* --------------------------------------------------------------------------
    5. Secciones
@@ -480,7 +497,9 @@ button { font: inherit; cursor: pointer; border: 0; }
    11. Estructura de página y títulos
    -------------------------------------------------------------------------- */
 .pagina { padding: 18px var(--margen) 0; }
-.pagina > * + * { margin-top: 12px; }
+.pagina > * + * { margin-top: 18px; }                 /* separación entre bloques (Figma: 16–22 px) */
+.pagina > .migas + * { margin-top: 12px; }
+.pagina > div:has(> .pagina__titulo) + * { margin-top: 12px; }   /* después del título */
 
 .migas { font-size: var(--fs-xs); color: var(--texto); }   /* Inicio › Mapa › … */
 .migas a:hover { color: var(--coral); }
@@ -511,7 +530,7 @@ button { font: inherit; cursor: pointer; border: 0; }
   color: var(--coral);
 }
 
-.lista { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+.lista { display: grid; gap: 10px; padding: 0; margin-inline: 0; margin-bottom: 0; list-style: none; }
 
 .nota {                          /* textos legales / aclaraciones al pie */
   font-size: var(--fs-meta);
@@ -630,7 +649,7 @@ button { font: inherit; cursor: pointer; border: 0; }
 .casilla input:checked { background: var(--coral-claro); border-color: var(--coral-claro); }
 .casilla input:checked::after { content: "✓"; color: var(--blanco); font-size: 14px; font-weight: 700; }
 
-.requisitos { display: grid; gap: 12px; padding: 0 10px; margin: 0; list-style: none; }
+.requisitos { display: grid; gap: 12px; padding: 0 10px; margin-inline: 0; margin-bottom: 0; list-style: none; }
 .requisitos li {
   display: flex;
   align-items: center;
@@ -1366,7 +1385,7 @@ button { font: inherit; cursor: pointer; border: 0; }
 }
 
 /* Pasos numerados pequeños ("Cómo usarla") */
-.pasos-mini { display: grid; gap: 14px; padding: 0 5px; margin: 0; list-style: none; counter-reset: paso; }
+.pasos-mini { display: grid; gap: 14px; padding: 0 5px; margin-inline: 0; margin-bottom: 0; list-style: none; counter-reset: paso; }
 .pasos-mini li {
   display: flex;
   align-items: center;
@@ -1631,3 +1650,80 @@ a.banner-plus .banner-plus__titulo { color: var(--blanco); }
 .info-extra { display: grid; gap: 4px; }
 .info-extra__titulo { font-size: var(--fs-chip); font-weight: 700; color: var(--azul-noche); }
 .info-extra p:not(.info-extra__titulo) { font-size: var(--fs-chip); color: var(--texto); }
+
+
+/* --------------------------------------------------------------------------
+   33. Ajustes según el Figma (noviembre)
+   -------------------------------------------------------------------------- */
+/* Perfil */
+.pagina > .cifras + .lista { margin-top: 22px; }
+.pagina > .perfil__salir { margin-top: 26px; }
+
+/* Ofertas: banner → categorías 20 px */
+.pagina > .banner-plus + .chips { margin-top: 20px; }
+
+/* Ilustraciones de los productos de cada comercio (PNG con fondo transparente) */
+.item-precio__foto--ilustracion { width: 72px; height: 78px; border-radius: 0; background: none; object-fit: contain; }
+.is-agotado .item-precio__foto--ilustracion { background: none; }
+
+/* Carrusel de fotos del comercio (la primera es la del exterior) */
+.carrusel { position: relative; border-radius: 20px; overflow: hidden; background: var(--grad-foto); }
+.carrusel__pista {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+  outline: none;
+}
+.carrusel__pista::-webkit-scrollbar { display: none; }
+.carrusel__pista.is-arrastrando { cursor: grabbing; scroll-snap-type: none; }
+.carrusel__foto { position: relative; flex: 0 0 100%; height: 190px; scroll-snap-align: center; overflow: hidden; }
+.carrusel__foto img { position: relative; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+.carrusel__foto--vertical::before {           /* fondo difuminado para fotos verticales */
+  content: ""; position: absolute; inset: -20px;
+  background: var(--fondo) center / cover; filter: blur(18px) saturate(1.1); opacity: .85;
+}
+.carrusel__foto--vertical img { object-fit: contain; }
+.carrusel > .carrusel__foto { height: 190px; }
+.carrusel__puntos {
+  position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%);
+  display: flex; gap: 6px; padding: 5px 8px; border-radius: var(--r-pill); background: rgb(0 41 65 / .35);
+}
+.carrusel__punto { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / .55); cursor: pointer; transition: width .2s, background .2s; }
+.carrusel__punto.is-activo { width: 18px; border-radius: 4px; background: #fff; }
+.portada--ilustracion { display: grid; place-items: center; height: 190px; border-radius: 20px; background: linear-gradient(135deg, #e3f3f9, #cfe7f1); }
+.portada--ilustracion img { width: 110px; height: 110px; object-fit: contain; filter: drop-shadow(0 8px 14px rgb(0 41 65 / .12)); }
+
+/* Escanear QR (Figma): cámara dentro del recuadro */
+button.escaner { display: block; width: 100%; border: 0; padding: 0; }
+.escaner__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.escaner__marco { z-index: 1; }
+.escaner__linea {
+  position: absolute; z-index: 1; left: 56px; right: 56px; top: 50%; height: 3px; border-radius: 2px;
+  background: var(--coral-claro); box-shadow: 0 0 12px rgb(253 110 110 / .8);
+}
+.escaner.is-activo .escaner__linea { animation: linea-qr 2.2s ease-in-out infinite alternate; }
+@keyframes linea-qr { from { top: 48px; } to { top: calc(100% - 52px); } }
+.escaner__texto { z-index: 1; text-shadow: 0 1px 2px rgb(0 0 0 / .4); padding: 0 16px; }
+.escaner.is-activo .escaner__texto { color: #fff; }
+@media (prefers-reduced-motion: reduce) { .escaner.is-activo .escaner__linea { animation: none; } }
+.comercio--compra { border-radius: 18px; min-height: 74px; }
+.comercio__foto--sm { width: 58px; height: 58px; }
+
+/* Códigos QR de prueba */
+.tickets { display: grid; gap: 12px; }
+.ticket { display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; background: var(--blanco); border: var(--borde-fino); border-radius: var(--r-md); }
+.ticket__qr { flex: none; width: 120px; height: 120px; image-rendering: pixelated; }
+.ticket__comercio { font-weight: 700; color: var(--azul-noche); }
+.ticket__compra { font-size: var(--fs-meta); color: var(--texto); }
+.ticket__codigo { margin-top: 6px; font-weight: 700; letter-spacing: 1px; color: var(--coral); }
+
+/* Ayuda y soporte */
+.pregunta-frecuente { background: var(--blanco); border: var(--borde-fino); border-radius: var(--r-md); padding: 16px; }
+.pregunta-frecuente summary { cursor: pointer; font-weight: 700; color: var(--azul-noche); list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+.pregunta-frecuente summary::-webkit-details-marker { display: none; }
+.pregunta-frecuente summary::after { content: "›"; transform: rotate(90deg); transition: transform .2s; color: var(--coral); }
+.pregunta-frecuente[open] summary::after { transform: rotate(-90deg); }
+.pregunta-frecuente p { margin-top: 10px; font-size: var(--fs-meta); color: var(--texto); line-height: 1.5; }
