@@ -256,7 +256,7 @@
   };
 
   const ILUS_CATEGORIA = { farmacias: 'productos/paracetamol-500-mg-grande.svg', copias: 'productos/copias-b-n-x20-3.svg', librerias: 'productos/cuaderno-80-hojas-2.svg', floristerias: 'productos/ramo-de-rosas-4.svg',
-    salones: 'productos/kairos/manicura-express.png', barberias: 'productos/corte-de-cabello-4.svg', lavanderias: 'productos/lavado-y-secado.svg', gasolineras: 'productos/gasolinera-uno/gasolina-regular.png' };
+    salones: 'productos/kairos/1.png', barberias: 'productos/corte-de-cabello-4.svg', lavanderias: 'productos/lavado-y-secado.svg', gasolineras: 'productos/gasolinera-uno/2.png' };
   // Fotos del comercio: se deslizan con el dedo (o arrastrando con el mouse). Sin foto, se muestra la ilustración de su categoría.
   const carrusel = c => {
     if (!c.fotos.length) return `<div class="portada portada--ilustracion"><img src="${e(img(ILUS_CATEGORIA[c.categoria]))}" alt=""></div>`;
@@ -329,7 +329,21 @@
       <form class="formulario" data-accion="login" novalidate style="margin-top:28px">
       ${campo('Correo institucional', 'correo', 'email', 'nombre@uca.edu.sv', '', ' autocomplete="email" required')}${campo('Contraseña', 'clave', 'password', '••••••••', '', ' autocomplete="current-password" required')}${alerta()}
       <a class="enlace" href="olvide.html" style="justify-self:end">¿Olvidaste tu contraseña?</a><button class="btn btn--solido" type="submit" style="margin-top:8px">Iniciar sesión</button>
-      <p class="separador" style="margin:10px 0">o continúa con</p><button class="btn btn--secundario" type="button" data-aviso="El inicio con Microsoft necesita registrar la app en Azure. Por ahora entra con tu correo y contraseña.">Cuenta UCA (Microsoft)</button></form>
+      <p class="separador" style="margin:10px 0">o continúa con</p><button class="btn btn--secundario btn--microsoft" type="button" data-abrir-ms><svg class="ms-logo" viewBox="0 0 21 21" width="20" height="20" aria-hidden="true"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>Cuenta UCA (Microsoft)</button></form>
+      <dialog class="hoja-ms" data-hoja-ms aria-labelledby="ms-titulo">
+        <form data-accion="microsoft" novalidate>
+          <p class="hoja-ms__demo">Simulación · no se conecta con Microsoft</p>
+          <h2 class="hoja-ms__titulo" id="ms-titulo">Continuar con tu cuenta UCA</h2>
+          ${E.ms ? `<div class="hoja-ms__cuenta"><span class="avatar avatar--sm">${e(iniciales(E.ms.nombre))}</span><div><strong>${e(E.ms.nombre)}</strong><small>${e(E.ms.correo)}</small></div><span class="estado estado--disponible">Sesión abierta</span></div>
+            <p class="hoja-ms__texto">Encontramos la cuenta de Microsoft con la que ya tienes sesión en este navegador. Nuvic solo usará tu nombre y tu correo.</p>
+            <button class="btn btn--primario" type="submit" name="usar" value="guardada">Continuar como ${e(E.ms.nombre.split(' ')[0])}</button>
+            <button class="enlace hoja-ms__otra" type="button" data-otra-ms>Usar otra cuenta</button>` : `<p class="hoja-ms__texto">Simulamos la cuenta de Microsoft que ya tienes abierta: escribe tu nombre y tu correo UCA una sola vez y la próxima vez Nuvic la detectará sola.</p>`}
+          <div class="hoja-ms__campos"${E.ms ? ' hidden' : ''}>${campo('Nombre (como aparece en Microsoft)', 'ms_nombre', 'text', 'Ana Martínez', '', ' autocomplete="name"')}${campo('Correo institucional', 'ms_correo', 'email', 'nombre@uca.edu.sv', '', ' autocomplete="email"')}
+            ${alerta()}<button class="btn btn--primario" type="submit" name="usar" value="nueva">Continuar</button></div>
+          <button class="btn btn--secundario" type="button" data-cerrar-ms>Cancelar</button>
+          <p class="nota">En la versión real, Microsoft confirmaría tu identidad y Nuvic recibiría tu nombre y correo con tu permiso.</p>
+        </form>
+      </dialog>
       <p class="pregunta" style="margin:22px 0 14px">¿No tienes cuenta? <a href="registro.html">Crear cuenta</a></p><p class="nota demo-nota">Cuenta de prueba: <b>ana.martinez@uca.edu.sv</b> · <b>Nuvic2026</b></p></main>`;
   };
   P.registro = () => {
@@ -566,6 +580,24 @@
       if (++E.intentos >= 5) { E.bloqueo = Date.now() + 60e3; E.intentos = 0; }
       guardar(); f.clave.value = ''; error(f, 'Correo o contraseña incorrectos.', ['correo', 'clave']);
     },
+    microsoft(f, ev) {
+      let nombre, correo;
+      if (ev.submitter && ev.submitter.value === 'guardada' && E.ms) ({ nombre, correo } = E.ms);
+      else {
+        nombre = f.ms_nombre.value.trim().replace(/\s+/g, ' '); correo = f.ms_correo.value.trim().toLowerCase();
+        if (nombre.length < 3) error(f, 'Escribe tu nombre como aparece en tu cuenta de Microsoft.', ['ms_nombre']);
+        if (!correo_valido(correo)) error(f, 'Usa tu correo institucional que termina en ' + CONFIG.dominio, ['ms_correo']);
+      }
+      let u = E.usuarios.find(x => x.correo === correo), nueva = false;
+      if (!u) {
+        nueva = true;
+        u = { id: id(), nombre, carne: '', correo, clave: null, microsoft: true, carrera: 'Cuenta UCA (Microsoft)', puntos: 0, comparaciones: 0, plus_hasta: null, creado: ahora() };
+        E.usuarios.push(u); sumar_puntos(u, 50, 'Bono de bienvenida', 'Regalo', 'Por crear tu cuenta');
+      }
+      E.ms = { nombre: u.nombre, correo: u.correo }; E.sesion = u.id; E.comparados = {}; guardar();
+      aviso(nueva ? `¡Hola, ${u.nombre.split(' ')[0]}! Te regalamos 50 puntos.` : `Hola de nuevo, ${u.nombre.split(' ')[0]}.`);
+      ir(destino_seguro(get('next')));
+    },
     registro(f) {
       const nombre = f.nombre.value.trim().replace(/\s+/g, ' '), carne = f.carne.value.trim(), correo = f.correo.value.trim().toLowerCase(), clave = f.clave.value;
       if (nombre.length < 3) error(f, 'Escribe tu nombre completo.', ['nombre']);
@@ -701,6 +733,15 @@
       }
     });
     window.addEventListener('pagehide', detener);
+  }
+  const hojaMs = document.querySelector('[data-hoja-ms]');
+  if (hojaMs) {
+    const abrir = () => { if (hojaMs.showModal) hojaMs.showModal(); else hojaMs.setAttribute('open', ''); (hojaMs.querySelector('.hoja-ms__campos:not([hidden]) input') || hojaMs.querySelector('[type=submit]')).focus(); };
+    document.querySelector('[data-abrir-ms]').addEventListener('click', abrir);
+    hojaMs.querySelector('[data-cerrar-ms]').addEventListener('click', () => hojaMs.close ? hojaMs.close() : hojaMs.removeAttribute('open'));
+    hojaMs.addEventListener('click', ev => { if (ev.target === hojaMs) hojaMs.close(); });
+    const otra = hojaMs.querySelector('[data-otra-ms]');
+    if (otra) otra.addEventListener('click', () => { hojaMs.querySelector('.hoja-ms__campos').hidden = false; otra.hidden = true; hojaMs.querySelector('#f-ms_nombre').focus(); });
   }
   const mostrar = document.querySelector('[data-mostrar-codigo]');
   if (mostrar) mostrar.addEventListener('click', () => { const f = mostrar.nextElementSibling; f.hidden = false; mostrar.hidden = true; f.querySelector('input').focus(); });

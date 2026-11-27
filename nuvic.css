@@ -1735,3 +1735,29 @@ button.escaner { display: block; width: 100%; border: 0; padding: 0; }
 .portada--pronto .estado { position: absolute; top: 12px; left: 12px; }
 .pronto { display: grid; gap: 6px; padding: 18px; border-radius: var(--r-md); background: #ddeff6; text-align: center; font-size: var(--fs-meta); color: var(--texto); }
 .pronto--fila { text-align: left; justify-items: start; }
+
+/* Miniaturas con ilustración (comercios sin foto del kiosco) */
+img[src$=".svg"].comercio__foto, img[src$=".svg"].opcion__foto, img[src$=".svg"].comercio-destacado__foto, img[src$=".svg"].pin__foto,
+img[src*="productos/"].comercio__foto, img[src*="productos/"].opcion__foto, img[src*="productos/"].comercio-destacado__foto, img[src*="productos/"].pin__foto {
+  object-fit: contain; padding: 6px; background: linear-gradient(135deg, #e3f3f9, #cfe7f1);
+}
+img[src*="productos/"].pin__foto { padding: 3px; background: #e3f3f9; }
+
+/* Entrar con cuenta UCA (Microsoft) · simulación */
+.btn--microsoft { display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.ms-cuadros { display: grid; grid-template-columns: 8px 8px; gap: 2px; }
+.ms-cuadros i { width: 8px; height: 8px; display: block; background: var(--azul-noche); opacity: .85; }
+.hoja-ms { width: min(380px, calc(100% - 24px)); border: 0; border-radius: 24px; padding: 22px 20px 18px; color: var(--texto); box-shadow: 0 20px 50px rgb(0 41 65 / .25); }
+.hoja-ms::backdrop { background: rgb(0 41 65 / .5); }
+.hoja-ms form { display: grid; gap: 14px; }
+.hoja-ms__demo { justify-self: start; padding: 3px 10px; border-radius: var(--r-pill); background: #fff1d6; color: #8a5a00; font-size: 11px; font-weight: 700; }
+.hoja-ms__titulo { font-size: var(--fs-h2); color: var(--azul-noche); }
+.hoja-ms__texto { font-size: var(--fs-meta); line-height: 1.5; }
+.hoja-ms__cuenta { display: flex; align-items: center; gap: 12px; padding: 12px; border: var(--borde-fino); border-radius: var(--r-md); }
+.hoja-ms__cuenta div { flex: 1; min-width: 0; display: grid; }
+.hoja-ms__cuenta strong { color: var(--azul-noche); }
+.hoja-ms__cuenta small { font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
+.hoja-ms__campos { display: grid; gap: 12px; }
+.hoja-ms__otra { justify-self: center; background: none; border: 0; cursor: pointer; font: inherit; color: var(--coral); text-decoration: underline; }
+.avatar--sm { width: 40px; height: 40px; font-size: 14px; flex: none; }
+.hoja-ms { margin: auto; max-height: calc(100dvh - 32px); overflow: auto; }
